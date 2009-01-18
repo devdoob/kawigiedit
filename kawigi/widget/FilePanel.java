@@ -1,4 +1,5 @@
 package kawigi.widget;
+
 import kawigi.cmd.*;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -9,7 +10,7 @@ import java.io.*;
 /**
  *	A simple panel that has fields to enter a font face and size.
  **/
-public class FilePanel extends JPanel implements ActionListener
+public class FilePanel extends JPanel implements ActionListener, FocusListener
 {
 	/**
 	 *	Text field that the user can enter the file path into.
@@ -19,7 +20,7 @@ public class FilePanel extends JPanel implements ActionListener
 	 *	Button that brings up the file dialog.
 	 **/
 	private JButton browseButton;
-	
+
 	/**
 	 *	Constructs a new FontPanel linked to the given Action.
 	 **/
@@ -28,12 +29,14 @@ public class FilePanel extends JPanel implements ActionListener
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		fileField = new ActionTextField(a);
 		fileField.setColumns(20);
+		fileField.addFocusListener(this);
 		browseButton = new JButton("Browse");
 		browseButton.addActionListener(this);
+		browseButton.addFocusListener(this);
 		add(fileField);
 		add(browseButton);
 	}
-	
+
 	/**
 	 *	Notifies us that the "Browse" button was pushed.
 	 **/
@@ -45,5 +48,19 @@ public class FilePanel extends JPanel implements ActionListener
 		if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
 			fileField.setText(fileChooser.getSelectedFile().getPath());
 		fileChooser.setFileSelectionMode(oldmode);
+	}
+
+	public void focusGained(FocusEvent e)
+	{
+		FocusListener[] arr = getFocusListeners();
+		for (FocusListener lstn : arr)
+			lstn.focusGained(e);
+	}
+
+	public void focusLost(FocusEvent e)
+	{
+		FocusListener[] arr = getFocusListeners();
+		for (FocusListener lstn : arr)
+			lstn.focusLost(e);
 	}
 }

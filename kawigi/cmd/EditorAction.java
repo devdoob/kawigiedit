@@ -1,10 +1,13 @@
 package kawigi.cmd;
 import kawigi.editor.*;
+import kawigi.language.EditorLanguage;
 import kawigi.properties.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
 /**
@@ -22,7 +25,7 @@ public class EditorAction extends DefaultAction
 	 *	The CodePane this action should act on.
 	 **/
 	protected CodePane context;
-	
+
 	/**
 	 *	Constructs a new EditorAction that executes the ActID on the CodePane.
 	 **/
@@ -244,7 +247,7 @@ public class EditorAction extends DefaultAction
 			}
 			case actInsertTestCode:
 			{
-				context.replaceSelection("<%:testing-code%>");
+				context.replaceSelection(EditorLanguage.sTestingCodeTag);
 				break;
 			}
 		}

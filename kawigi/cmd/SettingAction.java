@@ -8,16 +8,16 @@ import java.util.*;
 
 /**
  *	Action implementation for setting actions.
- *	
+ *
  *	This class really serves two purposes.  The first is to implement actions
  *	that are related to settings but aren't settings themselves (for instance,
  *	launching the config dialog and the OK and Cancel buttons on the config
  *	dialog).
- *	
+ *
  *	The other purpose is that it's the base class of all setting actions.  As
  *	part of this, there are a set of static variables and methods that are
  *	shared by all setting instances.
- *	
+ *
  *	The intended behavior is that if the settings dialog is up, all settings are
  *	set on a temporary prefs object, and committed when the "OK" button is
  *	pushed.  Otherwise, the setting is applied immediately.  Therefore, if
@@ -35,7 +35,7 @@ public class SettingAction extends DefaultAction
 	 *	Reference to the config dialog.
 	 **/
 	protected static JDialog dialog;
-	
+
 	/**
 	 *	Returns the temporary prefs if there is one, otherwise the real
 	 *	KawigiEdit prefs.
@@ -47,10 +47,10 @@ public class SettingAction extends DefaultAction
 		else
 			return tempPrefs;
 	}
-	
+
 	/**
 	 *	Returns true if settings shouldn't be committed yet.
-	 *	
+	 *
 	 *	Even though things set to the temporary prefs won't be committed par se,
 	 *	in order to immediately be effective, some settings need to notify other
 	 *	objects (for instance, syntax highlighting settings require a
@@ -61,7 +61,7 @@ public class SettingAction extends DefaultAction
 	{
 		return tempPrefs != null;
 	}
-	
+
 	/**
 	 *	Constructs a new SettingAction for the given ActID.
 	 **/
@@ -69,7 +69,7 @@ public class SettingAction extends DefaultAction
 	{
 		super(cmdid);
 	}
-	
+
 	/**
 	 *	Executes the non-setting setting commands.
 	 **/
@@ -84,9 +84,16 @@ public class SettingAction extends DefaultAction
 					dialog.getContentPane().add(UIHandler.loadMenu(MenuID.ConfigPanel, Dispatcher.getGlobalDispatcher()));
 					dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 					dialog.pack();
+					dialog.addWindowListener(
+							new WindowAdapter() {
+								public void windowClosing(WindowEvent e) {
+									Dispatcher.getGlobalDispatcher().runCommand(ActID.actCancelConfig);
+								}
+							});
 				}
 				if (tempPrefs == null)
 					tempPrefs = new ChainedPrefs(PrefFactory.getPrefs());
+				Dispatcher.getGlobalDispatcher().UIRefresh();
 				dialog.setVisible(true);
 				break;
 			case actCommitConfig:
@@ -102,7 +109,7 @@ public class SettingAction extends DefaultAction
 				break;
 		}
 	}
-	
+
 	/**
 	 *	Returns true if this action is available.
 	 **/
@@ -110,7 +117,7 @@ public class SettingAction extends DefaultAction
 	{
 		return true;
 	}
-	
+
 	/**
 	 *	Does all the commital actions that need to happen assuming all settings
 	 *	were changed at once.

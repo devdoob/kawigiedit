@@ -8,21 +8,18 @@ import javax.swing.text.*;
  *	This contains and manages a process and forwards its output using
  *	ProcessOutput objects.
  **/
-public class ProcessContainer
+public class ProcessContainer implements Runnable
 {
 	/**
 	 *	The Process that is run by this ProcessContainer.
 	 **/
 	private Process p;
+	
+	private Thread t;
 	/**
 	 *	The display control for things printed to stdout.
 	 **/
 	private ConsoleDisplay outputComponent;
-	/**
-	 *	The display control for things printed to stderr (which may be the same
-	 *	as outputComponent).
-	 **/
-	private ConsoleDisplay errorComponent;
 	/**
 	 *	Output thread for stdout.
 	 **/
@@ -51,9 +48,9 @@ public class ProcessContainer
 	 *	This process will be forcibly killed according to the current user
 	 *	settings.
 	 **/
-	public ProcessContainer(Process p, ConsoleDisplay output, ConsoleDisplay error)
+	public ProcessContainer(Process p, ConsoleDisplay output)
 	{
-		this(p, output, error, true);
+		this(p, output, true);
 	}
 	
 	/**
@@ -65,12 +62,11 @@ public class ProcessContainer
 	 *	If doTimeout is true, the process will be killed according to the
 	 *	current user settings for the time limit.
 	 **/
-	public ProcessContainer(Process p, ConsoleDisplay output, ConsoleDisplay error, boolean doTimeout)
+	public ProcessContainer(Process p, ConsoleDisplay output, boolean doTimeout)
 	{
 		
 		this.p = p;
 		outputComponent = output;
-		errorComponent = error;
 		if (doTimeout)
 			new KillThread(this).start();
 	}
@@ -85,6 +81,8 @@ public class ProcessContainer
 		stderr = new ProcessOutput(p.getErrorStream(), outputComponent);
 		stdout.start();
 		stderr.start();
+		t = new Thread(this);
+		t.run();
 	}
 	
 	/**
@@ -100,7 +98,6 @@ public class ProcessContainer
 		catch (InterruptedException ex)
 		{
 			outputComponent.println("***\nInterrupted***\n");
-			errorComponent.println("***\nInterrupted***\n");
 		}
 	}
 	
@@ -133,6 +130,13 @@ public class ProcessContainer
 		if (done)
 			return exitVal;
 		return -1;
+	}
+	
+	public void run()
+	{
+		if (endVal() != 0) {
+			outputComponent.println("Process terminated with exit code " + endVal());
+		}
 	}
 	
 	/**
