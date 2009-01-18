@@ -23,6 +23,7 @@
 			<JButton Action="actSaveLocal"/>
 			<JButton Action="actLoad"/>
 			<JButton Action="actKillProcess"/>
+			<JButton Action="actTestCases"/>
 		</HorizontalPanel>
 	</VerticalPanel>
 </JFrame>

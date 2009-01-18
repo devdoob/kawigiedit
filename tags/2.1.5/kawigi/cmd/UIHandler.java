@@ -1,7 +1,9 @@
 package kawigi.cmd;
+
 import kawigi.editor.*;
 import kawigi.widget.*;
 import java.awt.*;
+import java.awt.event.FocusListener;
 import javax.swing.*;
 import javax.xml.parsers.*;
 import java.io.*;
@@ -12,7 +14,7 @@ import org.xml.sax.helpers.*;
 
 /**
  *	This class loads UI constructs from XML.
- *	
+ *
  *	This has a bit of magic that needs to be cleaned up a bit, and the answer
  *	may be to just set properties' values in such a way that is strongly typed.
  **/
@@ -40,7 +42,7 @@ public class UIHandler extends DefaultHandler
 			return null;
 		}
 	}
-	
+
 	// Instance variables and XML handling variables:
 	/**
 	 *	Component that we are in the middle of creating.
@@ -67,7 +69,7 @@ public class UIHandler extends DefaultHandler
 	 *	The dispatcher from which commands should be created.
 	 **/
 	private Dispatcher dispatcher;
-	
+
 	/**
 	 *	Constructs a new UIHandler to handle an XML GUI specification and create
 	 *	actions using the given Dispatcher.
@@ -78,7 +80,7 @@ public class UIHandler extends DefaultHandler
 		finished = false;
 		hierarchy = new Stack<Container>();
 	}
-	
+
 	/**
 	 *	Returns the control that we created, or null if we aren't finished.
 	 **/
@@ -89,7 +91,7 @@ public class UIHandler extends DefaultHandler
 		else
 			return currentComponent;
 	}
-	
+
 	/**
 	 *	Called when we begin parsing the GUI XML.
 	 **/
@@ -98,15 +100,15 @@ public class UIHandler extends DefaultHandler
 		error = false;
 		currentComponent = null;
 	}
-	
+
 	/**
 	 *	Called when a start XML tag is encountered.
-	 *	
+	 *
 	 *	Here, we create the control as specified by the opening tag, but its
 	 *	creation isn't really complete until we get the end tag.  This control
 	 *	will be set as the current one, and will be added to the old current
 	 *	control.
-	 *	
+	 *
 	 *	There are parts of this method that I'm not proud of - in theory, you
 	 *	should be able to put attributes on these tags in the form X="val" and
 	 *	this code will call setX("val") on that control for you, but it's a bit
@@ -122,7 +124,7 @@ public class UIHandler extends DefaultHandler
 	 *	supported type, and try to coerce the value into one of those types.
 	 *	Either way, this method isn't perfect, it just "works" for the UI we
 	 *	have right now because I made it so :-)
-	 *	
+	 *
 	 *	There are three attributes that are treated specially (no setX method is
 	 *	called for them).  The first is Action, which specifies the ActID for
 	 *	the control, which bounds it to data and an action.  The second is
@@ -185,6 +187,8 @@ public class UIHandler extends DefaultHandler
 				{
 					reportError(new Exception("No Action constructor available for " + controlClass), false);
 				}
+				else if (action instanceof FocusListener)
+					control.addFocusListener((FocusListener)action);
 			}
 			else if (attributes.getValue("MenuID") != null)
 			{
@@ -296,10 +300,10 @@ public class UIHandler extends DefaultHandler
 			reportError(ex, false);
 		}
 	}
-	
+
 	/**
 	 *	Notifies us of non-tag characters between tags.
-	 *	
+	 *
 	 *	Normally we don't care about what's here, except in the case of Snippet
 	 *	controls.  If the current component is a snippet, these characters are
 	 *	part of the "code" in the snippet.  Unfortunately, the SAX parser
@@ -314,10 +318,10 @@ public class UIHandler extends DefaultHandler
 			((Snippet)currentComponent).changeCode(((Snippet)currentComponent).getCode() + new String(ch, start, length));
 		}
 	}
-	
+
 	/**
 	 *	Notifies us of an end tag being reached.
-	 *	
+	 *
 	 *	Once this is called, we are done working with the current component,
 	 *	so we pop its parent off the hierarchy stack and the parent becomes
 	 *	the current component again, unless there is nothing in the stack, which
@@ -328,7 +332,7 @@ public class UIHandler extends DefaultHandler
 		if (!hierarchy.empty())
 			currentComponent = hierarchy.pop();
 	}
-	
+
 	/**
 	 *	Notifies us that the parser has reached the end of the UI document.
 	 **/
@@ -336,7 +340,7 @@ public class UIHandler extends DefaultHandler
 	{
 		finished = true;
 	}
-	
+
 	/**
 	 *	Notifies us of any error encountered in parsing.
 	 **/
@@ -344,7 +348,7 @@ public class UIHandler extends DefaultHandler
 	{
 		reportError(e, false);
 	}
-	
+
 	/**
 	 *	Notifies us of any recoverable warning encountered in parsing.
 	 **/
@@ -352,7 +356,7 @@ public class UIHandler extends DefaultHandler
 	{
 		reportError(e, true);
 	}
-	
+
 	/**
 	 *	Given a class name, tries to find the fully qualified class.  It will
 	 *	first try to find the class with exactly this fully qualified class
@@ -396,7 +400,7 @@ public class UIHandler extends DefaultHandler
 		}
 		throw e;
 	}
-	
+
 	/**
 	 *	Prints the stack trace of an error or warning and notifies the user with
 	 *	a dialog.  Under normal conditions, users shouldn't get any of these

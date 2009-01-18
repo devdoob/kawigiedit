@@ -15,11 +15,31 @@ public class ActionLabel extends JLabel implements PropertyChangeListener
 	protected Action a;
 	
 	/**
+	 *	Constructor without parameters.
+	 **/
+	public ActionLabel()
+	{
+	}
+
+	/**
 	 *	Constructor that uses an Action (if you want to use any other parameters
 	 *	for the constructor, you should just use a JLabel).
 	 **/
 	public ActionLabel(Action a)
 	{
+		this();
+		setAction(a);
+	}
+
+	/**
+	 *	Changes the action for the label.
+	 **/
+	public void setAction(Action a)
+	{
+		if (null != this.a) {
+			this.a.removePropertyChangeListener(this);
+		}
+
 		this.a = a;
 		
 		if (a.getValue(Action.NAME) != null)

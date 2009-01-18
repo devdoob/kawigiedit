@@ -3,20 +3,21 @@ import kawigi.util.*;
 import kawigi.editor.*;
 import kawigi.cmd.*;
 import kawigi.problem.*;
+import kawigi.language.*;
 import javax.swing.*;
 import java.awt.*;
+
 import com.topcoder.shared.language.*;
-import com.topcoder.shared.problem.*;
 import com.topcoder.client.contestant.*;
 
 /**
  *	This class is the actual TopCoder arena plugin.
- *	
+ *
  *	When KawigiEdit is run as a plugin, this is where everything basically
  *	starts.
- *	
+ *
  *	<h2>Kawigi's Discourse on KawigiEdit's Source Code</h2>
- *	
+ *
  *	You'll notice that most of KawigiEdit's source code files don't know
  *	anything about TopCoder classes (this one is necessarily an exception, since
  *	the plugin interface needs to pass me TopCoder-defined objects).  This is to
@@ -42,14 +43,14 @@ import com.topcoder.client.contestant.*;
  *	conform to that convention where a class is either strictly specific to
  *	plugin mode or doesn't reference TC classes directly.  An interface/factory
  *	pattern is an easy way to do this in most cases.
- *	
+ *
  *	I'm assuming that people wanting to modify KawigiEdit will start by looking
  *	at this file.  There isn't much here in the way of juicy code, but that does
  *	make it an opportune place to describe the general organization of the code
  *	and make suggestions on how to modify it if you so desire.  Note that the
  *	HTML will be more readable if you look at the javadocs that should have been
  *	in the jar with any official release of KawigiEdit.
- *	
+ *
  *	First, here's a rundown of what's in each package.  For those of you who are
  *	less initiated in Java, a package is basically a folder full of classes.  In
  *	KawigiEdit, the source files are found in those folders along with the class
@@ -97,7 +98,7 @@ import com.topcoder.client.contestant.*;
  *		<li><b>kawigi.editor.*</b> - This package has the implementation behind
  *		the editor part of KawigiEdit.  This includes:
  *		<ol>
- *			<li>Classes that customize the editor window itself - 
+ *			<li>Classes that customize the editor window itself -
  *			<code>CodePane</code>, <code>ConfigurableEditorKit</code> and
  *			<code>ObedientViewFactory</code>.</li>
  *			<li>"View" classes, which manage rendering the text.  That includes
@@ -119,7 +120,7 @@ import com.topcoder.client.contestant.*;
  *			versions of classes defined by TopCoder.  Aside from the obvious
  *			stuff, the EditorLanguage enum is the way to get language-specfic
  *			settings (like how to save, compile and run code in that language),
- *			and it also has a method called fixLiteral, which is the result of
+ *			and it also has a method called prepareValForCode, which is the result of
  *			lots of learning about where it's harder to generate valid testing
  *			code in various languages.  Fixing these problems in the past has
  *			sometimes destablized other code generation scenarios, but in the
@@ -138,8 +139,7 @@ import com.topcoder.client.contestant.*;
  *			<li>Some are used to create <code>ClassDecl</code>s -
  *			<code>ClassDeclGenerator</code>, <code>ProblemParser</code>,
  *			<code>TCProblemConverter</code> and <code>ClassDeclFactory</code>.
- *			</li><code>Skeleton</code> and <code>TemplateGenerator</code> are
- *			related to skeleton code generation.</li>
+ *			</li><code>Skeleton</code> is related to skeleton code generation.</li>
  *		</ol></li>
  *		<li><b>kawigi.properties.*</b> - This package is how KawigiEdit manages
  *		preferences and settings.  Outside packages will basically always access
@@ -195,21 +195,21 @@ import com.topcoder.client.contestant.*;
  *			<code>ColorSwatchDropdown</code>).</li>
  *		</ol></li>
  *	</ul>
- *	
+ *
  *	Next, it might be useful to understand the resources included with and used
  *	by KawigiEdit.
- *	
+ *
  *	Aside from a bunch of icons and images (that are mostly referenced in
  *	ActID.java, although some aren't used), there are four .words files directly
  *	in the rc folder, one for each language.  These are text files that contain
  *	keywords and tokens and how the Views should highlight them.
- *	
+ *
  *	Then there's a folder called rc/templates which contains the default
  *	template for each language.  There's no reason to change these directly,
  *	since you can set it to use a modified version of the template using the
  *	KawigiEdit settings dialog.  If you think one of the templates should be
  *	modified for everyone, let me know.
- *	
+ *
  *	Finally, there's a folder called rc/ui which has a bunch of .ui files in it.
  *	The .ui files are XML representations of GUI hierarchies, and each one is
  *	loaded for different reasons (kawigi/cmd/MenuID.java will give you some idea
@@ -220,7 +220,7 @@ import com.topcoder.client.contestant.*;
  *	standalone mode) to set a property called
  *	<code>kawigi.ui.[a name from MenuID.java]</code> to be the path to your
  *	version of the .ui file.
- *	
+ *
  *	Perhaps I'll someday make a way to easily add commands to KawigiEdit without
  *	modifying KawigiEdit at all.  While I don't mind people hacking up
  *	KawigiEdit to their liking, it makes it hard for people to upgrade to a new
@@ -258,20 +258,20 @@ import com.topcoder.client.contestant.*;
  *		Then you'll have to write the code to make that UI show up at the right
  *		time.</li>
  *	</ol>
- *	
+ *
  *	Consider that you may not actually need to write code to customize
  *	KawigiEdit to your liking - for instance, if all you want to do is add a
  *	button to the main KawigiEdit UI that inserts your tokenizer, you could
  *	just customize Plugin.ui to include a Snippet item there and hardcode your
  *	tokenizer code (with appropriate XML escape sequences) into your version of
  *	Plugin.ui.
- *	
+ *
  *	If you want to add some kind of post-processing to your code before saving
  *	it locally, you probably need to modify
  *	<code>kawigi.cmd.LocalTestAction.saveLocal()</code>.  I'm fairly certain
  *	that someday there will be something which allows you to do this without
  *	modifying KawigiEdit, I'm just not exactly sure what it will look like.
- *	
+ *
  *	On the other hand, if you want to add some kind of post-processing to your
  *	code before submitting it to TopCoder, you should modify
  *	<code>kawigi.KawigiEdit.getSource()</code>.  Again, it's pretty likely that
@@ -281,13 +281,24 @@ import com.topcoder.client.contestant.*;
 public class KawigiEdit
 {
 	/**
-	 *	This is the panel returned to TopCoder that is displayed in the applet.
+	 * Contains string representing current version of plugin.
+	 * Created to exclude repeating of this string in several places.
+	 */
+	public final static String versionString = "KawigiEdit 2.1.5 (beta) modified by pivanof";
+
+	/**
+	 * This is the panel returned to TopCoder that is displayed in the applet.
 	 **/
 	private JPanel mainPanel;
 	/**
-	 *	This is the name given by the user to this instance of KawigiEdit.
+	 * This is the name given by the user to this instance of KawigiEdit.
 	 **/
 	private String name;
+
+	/**
+	 * Code that was first generated on entering to the problem.
+	 */
+	private String autoGeneratedCode;
 	
 	/**
 	 *	KawigiEdit plugin constructor - sets the AppEnvironment to PluginMode.
@@ -296,10 +307,10 @@ public class KawigiEdit
 	{
 		AppEnvironment.setEnvironment(AppEnvironment.PluginMode);
 	}
-	
+
 	/**
-	 *	Returns the magic KawigiEdit panel. 
-	 *	
+	 *	Returns the magic KawigiEdit panel.
+	 *
 	 *	From the TopCoder plugin interface.
 	 **/
 	public JPanel getEditorPanel()
@@ -316,78 +327,92 @@ public class KawigiEdit
 			Dispatcher.getCompileComponent().clear();
 		return mainPanel;
 	}
-	
+
 	/**
 	 *	Returns the text in the editor.
-	 *	
+	 *
 	 *	This is the text that TopCoder thinks is in the editor - what it saves
 	 *	remotely, compiles, tests and submits.  This is the code that can't
 	 *	break the UCR ;-)
-	 *	
+	 *
 	 *	From the TopCoder plugin interface.
 	 **/
 	public String getSource()
 	{
+		LocalTestAction.requestFileSync();
+
 		String s = Dispatcher.getCodePane().getText();
+		// If nothing was changed since auto-generation then returnin nothing.
+		// This will help to generate code again if user simply changes languages.
+		if (s.equals(autoGeneratedCode))
+			s = "";
+
 		// Remove KawigiEdit tags.  Eventually we will probably have reason to
 		// replace certain KawigiEdit tags with something interesting on
 		// submission.
 		return s.replaceAll("<%:[a-zA-Z0-9_-]+%>", "");
 	}
-	
+
 	/**
 	 *	Sets the text in the editor.
-	 *	
+	 *
 	 *	This implementation will ignore the request if the source provided is empty.
 	 *	This is to maintain auto-generated code.  Note that if you get code from
 	 *	TC and you want to keep it but use it for testing, you'll have to stick
 	 *	a <%:testing-code%> tag in there wherever the main method/testing code
 	 *	should be.
-	 *	
+	 *
 	 *	From the TopCoder plugin interface.
 	 **/
 	public void setSource(String source)
 	{
+		Dispatcher.getGlobalDispatcher().runCommand(ActID.actGenerateCode);
+		autoGeneratedCode = Dispatcher.getCodePane().getText();
+
 		if (source.length() > 0)
 		{
 			CodePane textPane = Dispatcher.getCodePane();
+			source = ProblemContext.getLanguage().addAutoTestTag(source);
 			textPane.setText(source);
-			// After calling set text, the editor will be scrolled to the
-			// bottom.  Fix that.
-			((JViewport)textPane.getParent()).setViewPosition(new Point(0, 0));
+			textPane.readdUndoListener();
+
+			LocalTestAction.resetLastSaveTime();
+			Dispatcher.resetLastEditTime();
 		}
+		
+		Dispatcher.hookMainWindow();
 	}
-	
+
 	/**
 	 *	Empties the text pane.
-	 *	
+	 *
 	 *	From the TopCoder plugin interface.
 	 **/
 	public void clear()
 	{
 		Dispatcher.getCodePane().setText("");
 	}
-	
+
 	/**
 	 *	Enables/disables the text pane.
-	 *	
+	 *
 	 *	I've considered ignoring this request, I think TC just started actually
 	 *	calling it, but it doesn't get called consistently (like it might not
 	 *	be called if you close and reopen the problem).
-	 *	
+	 *
 	 *	From the TopCoder plugin interface.
 	 **/
 	public void setTextEnabled(Boolean b)
 	{
 		Dispatcher.getCodePane().setEnabled(b.booleanValue());
 	}
-	
+
 	/**
 	 *	Notifies the editor of a new problem being opened, or the language
 	 *	being changed, or whatever.
-	 *	
+	 *
 	 *	If the editor is empty, we will generate skeleton code.
-	 *	
+	 *
 	 *	From the TopCoder plugin interface.
 	 **/
 	public void setProblemComponent(ProblemComponentModel component, Language lang, com.topcoder.shared.problem.Renderer renderer)
@@ -395,59 +420,54 @@ public class KawigiEdit
 		if (Dispatcher.getProblemTimer() != null)
 			Dispatcher.getProblemTimer().select(component.getComponent().getProblemId(), component.getPoints().doubleValue());
 		ProblemContext.setCurrentClass(ClassDeclFactory.getClassDecl(component.getComponent(), lang));
-		if (Dispatcher.getCodePane().getText().length() == 0)
-		{
-			Dispatcher.getGlobalDispatcher().runCommand(ActID.actGenerateCode);
-		}
 	}
 
 	/**
 	 *	Clears the text pane for a new problem.
-	 *	
+	 *
 	 *	From the TopCoder plugin interface.
 	 **/
 	public void startUsing()
 	{
-		if (Dispatcher.getEditorPanel() != null)
-			clear();
+		getEditorPanel();
 	}
-	
+
 	/**
 	 *	Doesn't do anything.
-	 *	
+	 *
 	 *	From the TopCoder plugin interface.
 	 **/
 	public void stopUsing()
 	{
 	}
-	
+
 	/**
 	 *	Brings up a configure dialog to set options in the editor plugin.
-	 *	
+	 *
 	 *	From the TopCoder plugin interface.
 	 **/
 	public void configure()
 	{
 		Dispatcher.getGlobalDispatcher().runCommand(ActID.actLaunchConfig);
 	}
-	
+
 	/**
 	 *	Verifies or sets several properties used by parts of the editor to set
 	 *	up.
-	 *	
+	 *
 	 *	For awhile, I was using this, but all the code pretty much checks to
 	 *	make sure I have all my configurations intact.  I may start using this
 	 *	again very soon to offer an optional wizard-like initial configuration.
-	 *	
+	 *
 	 *	From the TopCoder plugin interface.
 	 **/
 	public void install()
 	{
 	}
-	
+
 	/**
 	 * Sets the name given to this plugin.
-	 * 
+	 *
 	 * From the TopCoder plugin interface.
 	 **/
 	public void setName(String n)

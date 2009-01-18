@@ -5,6 +5,8 @@
 				<VerticalPanel>
 					<VerticalPanel BorderTitle="General">
 						<FilePanel Action="actLocalDirField"/>
+                        <ActionStateCheckBox Action="actAutoFileSync"/>
+                        <ActionStateCheckBox Action="actPreferFileOpen"/>
 						<HorizontalPanel>
 							<ActionLabel Action="actTimeout"/>
 							<ActionSpinner Action="actTimeout"/>
@@ -75,17 +77,26 @@
 						</GridPanel>
 					</HorizontalPanel>
 					<HorizontalPanel BorderTitle="C++">
-						<GridPanel GridDimensions="4,1">
+						<GridPanel GridDimensions="6,1">
 							<ActionLabel Action="actCPPFileName"/>
 							<ActionLabel Action="actCPPCompileCommand"/>
 							<ActionLabel Action="actCPPRunCommand"/>
 							<ActionLabel Action="actCPPOverride"/>
+							<ActionLabel Action="actCPPLLType"/>
+							<ActionLabel Action="actCPPLLConst"/>
 						</GridPanel>
-						<GridPanel GridDimensions="4,1">
+						<GridPanel GridDimensions="6,1">
 							<ActionTextField Action="actCPPFileName" Columns="25"/>
 							<ActionTextField Action="actCPPCompileCommand" Columns="25"/>
 							<ActionTextField Action="actCPPRunCommand" Columns="25"/>
 							<FilePanel Action="actCPPOverride"/>
+							<ActionTextField Action="actCPPLLType" Columns="25"/>
+							<GridPanel GridDimensions="1,4">
+								<ActionLabel Action="actCPPLLPrefix"/>
+								<ActionTextField Action="actCPPLLPrefix" Columns="7"/>
+								<ActionLabel Action="actCPPLLPostfix"/>
+								<ActionTextField Action="actCPPLLPostfix" Columns="7"/>
+							</GridPanel>
 						</GridPanel>
 					</HorizontalPanel>
 					<HorizontalPanel BorderTitle="C#">

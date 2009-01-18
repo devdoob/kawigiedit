@@ -16,14 +16,14 @@ import java.util.*;
  *	it, this is also your class.  And if you need global access to several
  *	important UI components (like the main CodePane), you can get it from this
  *	class.
- *	
+ *
  *	There is a lot of references to "subdispatchers" in the kawigi.cmd package.
  *	There is one global dispatcher that holds commands that don't need access
  *	to a control on which to act, and it has a set of dispatchers (called
  *	subdispatchers that are bound to objects (currently always CodePanes) on
  *	which they act.
  **/
-public class Dispatcher implements FocusListener
+public class Dispatcher implements FocusListener, WindowListener, HierarchyListener
 {
 	/**
 	 *	Map of ActIDs to Actions that have already been instantiated on this
@@ -37,7 +37,7 @@ public class Dispatcher implements FocusListener
 	/**
 	 *	The top-level window containing KawigiEdit.
 	 **/
-	private static JFrame window;
+	//private static JFrame window;
 	/**
 	 *	Global editor panels required by several actions.
 	 **/
@@ -70,7 +70,7 @@ public class Dispatcher implements FocusListener
 	 *	A list of subdispatchers if this is the global dispatcher.
 	 **/
 	private java.util.List<Dispatcher> contextualDispatchers;
-	
+
 	/**
 	 *	Instantiates the global dispatcher.
 	 **/
@@ -81,7 +81,7 @@ public class Dispatcher implements FocusListener
 		contextualDispatchers = new ArrayList<Dispatcher>();
 		actionMap = new HashMap<ActID, DefaultAction>();
 	}
-	
+
 	/**
 	 *	Instantiates a local subdispatcher that acts on context.
 	 **/
@@ -93,7 +93,7 @@ public class Dispatcher implements FocusListener
 		globalDispatcher.contextualDispatchers.add(this);
 		context.addFocusListener(globalDispatcher);
 	}
-	
+
 	/**
 	 *	Returns true if this dispatcher is the global dispatcher.
 	 **/
@@ -101,7 +101,7 @@ public class Dispatcher implements FocusListener
 	{
 		return global;
 	}
-	
+
 	/**
 	 *	Accessor for the global dispatcher.
 	 **/
@@ -111,7 +111,7 @@ public class Dispatcher implements FocusListener
 			globalDispatcher = new Dispatcher();
 		return globalDispatcher;
 	}
-	
+
 	/**
 	 *	Creates and returns a local subdispatcher that acts on context.
 	 **/
@@ -119,24 +119,35 @@ public class Dispatcher implements FocusListener
 	{
 		return new Dispatcher(context);
 	}
-	
+
+	/**
+	 *	Deletes subdispatcher from internal structures and forgets it.
+	 *  Method trusts to caller and doesn't check disp if it's null or
+	 *  if it's really was created with createSubDispatcher.
+	 **/
+	public void eraseSubDispatcher(Dispatcher disp)
+	{
+		globalDispatcher.contextualDispatchers.remove(disp);
+		disp.context.removeFocusListener(globalDispatcher);
+	}
+
 	/**
 	 *	Sets the main window KawigiEdit is on.
 	 **/
 	public static void setWindow(JFrame window)
 	{
-		Dispatcher.window = window;
+		//Dispatcher.window = window;
 	}
-	
+
 	/**
 	 *	Gets the main window.
-	 *	
+	 *
 	 *	If it hasn't been set, it tries to find the top-level window containing
 	 *	the editor.
 	 **/
 	public static JFrame getWindow()
 	{
-		if (window == null)
+		/*if (window == null)
 		{
 			// Try walking the component hierarchy to see if we can reach a top-level
 			// window.
@@ -146,9 +157,17 @@ public class Dispatcher implements FocusListener
 			if (c != null)
 				window = (JFrame)c;
 		}
-		return window;
+		return window;*/
+
+		if (editorPanel != null) {
+			Container cont = editorPanel.getTopLevelAncestor();
+			if (cont instanceof JFrame)
+				return (JFrame)cont;
+		}
+
+		return null;
 	}
-	
+
 	/**
 	 *	Gets the EditorPanel for the code editor.
 	 **/
@@ -156,15 +175,28 @@ public class Dispatcher implements FocusListener
 	{
 		return editorPanel;
 	}
-	
+
 	/**
 	 *	Sets the EditorPanel for the code editor.
 	 **/
 	public static void setEditorPanel(EditorPanel panel)
 	{
 		editorPanel = panel;
+		hookMainWindow();
 	}
 	
+	public static void hookMainWindow()
+	{
+		// We need to catch operations on main window to make auto file synchronization possible
+		JFrame wind = getWindow();
+		if (wind == null) {
+			editorPanel.addHierarchyListener(getGlobalDispatcher());
+		}
+		else {
+			wind.addWindowListener(getGlobalDispatcher());
+		}
+	}
+
 	/**
 	 *	Gets the CodePane for the code editor.
 	 **/
@@ -172,7 +204,7 @@ public class Dispatcher implements FocusListener
 	{
 		return editorPanel.getCodePane();
 	}
-	
+
 	/**
 	 *	Gets the EditorPanel for the Local Code tab.
 	 **/
@@ -180,7 +212,7 @@ public class Dispatcher implements FocusListener
 	{
 		return localCodeEditorPanel;
 	}
-	
+
 	/**
 	 *	Sets the EditorPanel for the Local Code tab.
 	 **/
@@ -188,7 +220,7 @@ public class Dispatcher implements FocusListener
 	{
 		localCodeEditorPanel = panel;
 	}
-	
+
 	/**
 	 *	Gets the CodePane for the Local Code tab.
 	 **/
@@ -196,7 +228,7 @@ public class Dispatcher implements FocusListener
 	{
 		return localCodeEditorPanel.getCodePane();
 	}
-	
+
 	/**
 	 *	Gets the EditorPanel for the Testing Code editor.
 	 **/
@@ -204,7 +236,7 @@ public class Dispatcher implements FocusListener
 	{
 		return testEditorPanel;
 	}
-	
+
 	/**
 	 *	Sets the EditorPanel for the Testing Code editor.
 	 **/
@@ -212,15 +244,15 @@ public class Dispatcher implements FocusListener
 	{
 		testEditorPanel = panel;
 	}
-	
+
 	/**
-	 *	Gets the CodePane for teh Testing Code editor.
+	 *	Gets the CodePane for the Testing Code editor.
 	 **/
 	public static CodePane getTestCodePane()
 	{
 		return testEditorPanel.getCodePane();
 	}
-	
+
 	/**
 	 *	Returns the component that displays stuff printed from test runs.
 	 **/
@@ -228,7 +260,7 @@ public class Dispatcher implements FocusListener
 	{
 		return outputComp;
 	}
-	
+
 	/**
 	 *	Sets the component that displays stuff printed from test runs.
 	 **/
@@ -236,7 +268,7 @@ public class Dispatcher implements FocusListener
 	{
 		outputComp = comp;
 	}
-	
+
 	/**
 	 *	Returns the component that displays compile output.
 	 **/
@@ -244,7 +276,7 @@ public class Dispatcher implements FocusListener
 	{
 		return compileComp;
 	}
-	
+
 	/**
 	 *	Sets the component that displays compile output.
 	 **/
@@ -252,7 +284,7 @@ public class Dispatcher implements FocusListener
 	{
 		compileComp = comp;
 	}
-	
+
 	/**
 	 *	Returns the JTabbedPane that all the major stuff is on.
 	 **/
@@ -260,7 +292,7 @@ public class Dispatcher implements FocusListener
 	{
 		return tabs;
 	}
-	
+
 	/**
 	 *	Sets the JTabbedPane that all the major stuff is on.
 	 **/
@@ -268,7 +300,7 @@ public class Dispatcher implements FocusListener
 	{
 		tabs = tabbedPane;
 	}
-	
+
 	/**
 	 *	Sets the problem timer control that's normally on the left side of the
 	 *	window.
@@ -277,7 +309,7 @@ public class Dispatcher implements FocusListener
 	{
 		timer = problemTimer;
 	}
-	
+
 	/**
 	 *	Returns the problem timer.
 	 **/
@@ -285,7 +317,7 @@ public class Dispatcher implements FocusListener
 	{
 		return timer;
 	}
-	
+
 	/**
 	 *	Sets the EditorPanel for the template editor.
 	 **/
@@ -293,7 +325,7 @@ public class Dispatcher implements FocusListener
 	{
 		templateEditorPanel = editor;
 	}
-	
+
 	/**
 	 *	Returns the EditorPanel for the template editor.
 	 **/
@@ -301,7 +333,7 @@ public class Dispatcher implements FocusListener
 	{
 		return templateEditorPanel;
 	}
-	
+
 	/**
 	 *	Returns the CodePane for the template editor.
 	 **/
@@ -309,7 +341,7 @@ public class Dispatcher implements FocusListener
 	{
 		return templateEditorPanel.getCodePane();
 	}
-	
+
 	/**
 	 *	Returns a "community JFileChooser instance.
 	 **/
@@ -321,6 +353,16 @@ public class Dispatcher implements FocusListener
 		}
 		return globalFileChooser;
 	}
+
+	public static long getLastEditTime()
+	{
+		return getCodePane().getLastEditTime();
+	}
+	
+	public static void resetLastEditTime()
+	{
+		getCodePane().resetLastEditTime();
+	}
 	
 	/**
 	 *	Gets the Action instance for the given ActID.
@@ -329,10 +371,10 @@ public class Dispatcher implements FocusListener
 	{
 		return getAction(actid, true);
 	}
-	
+
 	/**
 	 *	Gets the Action instance for the given ActID.
-	 *	
+	 *
 	 *	There are a few things that might happen here:
 	 *	<ol>
 	 *		<li>If this is called on the global dispatcher and the ActID
@@ -409,6 +451,7 @@ public class Dispatcher implements FocusListener
 				Constructor<? extends DefaultAction> c = cl.getConstructor(ActID.class, context.getClass());
 				DefaultAction act = c.newInstance(actid, context);
 				actionMap.put(actid, act);
+				context.addFocusListener(act);
 				return act;
 			}
 			catch (Throwable t)
@@ -419,6 +462,7 @@ public class Dispatcher implements FocusListener
 			{
 				DefaultAction act = cl.newInstance();
 				actionMap.put(actid, act);
+				context.addFocusListener(act);
 				return act;
 			}
 			catch (Throwable t)
@@ -427,7 +471,7 @@ public class Dispatcher implements FocusListener
 		}
 		return null;
 	}
-	
+
 	/**
 	 *	Launches an event on the given actid (i.e. - does what would happen if
 	 *	you clicked on the button or something like that)
@@ -440,7 +484,7 @@ public class Dispatcher implements FocusListener
 		else
 			reportError(new Exception(actid + " is currently disabled."));
 	}
-	
+
 	/**
 	 *	Brings up a message dialog to notify the user about an error, and also
 	 *	prints the stack trace of the error.
@@ -449,14 +493,14 @@ public class Dispatcher implements FocusListener
 	{
 		try
 		{
-			JOptionPane.showMessageDialog(window, t, "Command dispatch error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(getWindow(), t, "Command dispatch error", JOptionPane.ERROR_MESSAGE);
 		}
 		catch (HeadlessException ex)
 		{
 		}
 		t.printStackTrace();
 	}
-	
+
 	/**
 	 *	Refreshes the settings of all currently mapped actions on this
 	 *	dispatcher.  If this is the global dispatcher, also refreshes all
@@ -486,11 +530,47 @@ public class Dispatcher implements FocusListener
 					break;
 				}
 	}
-	
+
 	/**
 	 *	Does nothing - part of the FocusListener interface.
 	 **/
-	public void focusLost(FocusEvent e)
-	{
+	public void focusLost(FocusEvent e) {}
+
+	public void windowActivated(WindowEvent e) {
+		LocalTestAction.requestFileSync();
+		getCodePane().requestFocusInWindow();
+	}
+
+	public void windowDeactivated(WindowEvent e) {
+		LocalTestAction.requestFileSync();
+	}
+
+	public void windowClosed(WindowEvent e) {}
+
+	public void windowClosing(WindowEvent e) {}
+
+	public void windowDeiconified(WindowEvent e) {}
+
+	public void windowIconified(WindowEvent e) {}
+
+	public void windowOpened(WindowEvent e) {}
+	
+	/**
+	 * Part of HierarchyListener interface. Used to catch the moment of showing up
+	 * of newly set up problem.
+	 * 
+	 * @param e		Event fired
+	 */
+	public void hierarchyChanged(HierarchyEvent e) {
+		if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && editorPanel.isShowing()) {
+			JFrame wind = Dispatcher.getWindow();
+			if (wind != null) {
+				wind.removeWindowListener(this);
+				wind.addWindowListener(this);
+				editorPanel.removeHierarchyListener(this);
+				
+				windowActivated(null);
+			}
+		}
 	}
 }

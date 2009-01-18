@@ -1,56 +1,108 @@
 package kawigi.problem;
+
 import com.topcoder.shared.language.*;
 import com.topcoder.shared.problem.*;
-import com.topcoder.client.contestant.*;
+
+import kawigi.cmd.ProblemContext;
 import kawigi.language.*;
-import kawigi.cmd.*;
+
 
 /**
- *	This is perhaps one of the most important source files in KawigiEdit,
- *	because it converts TopCoder's problem statements into a format that allows
- *	KawigiEdit to generate skeleton and test code in plugin mode.
+ * This is perhaps one of the most important source files in KawigiEdit,
+ * because it converts TopCoder's problem statements into a format that allows
+ * KawigiEdit to generate skeleton and test code in plugin mode.
  **/
-public class TCProblemConverter implements ClassDeclGenerator
+public final class TCProblemConverter implements ClassDeclGenerator
 {
 	/**
-	 *	Generates a ClassDecl from the given parameters.
-	 *	
-	 *	In this implementation, the first parameter <b>must</b> be a TopCoder
-	 *	ProblemComponent, and the second parameter <b>must</b> be a TopCoder
-	 *	Language.
-	 *	
-	 *	As a side effect, the KawigiEdit language corresponding to the TopCoder
-	 *	language given is set as the current language in the ProblemContext
-	 *	class.
+	 * TopCoder ProblemComponent. Saved here for "reparsing" purposes.
+	 */
+	private static ProblemComponent component;
+	/**
+	 * TopCoder Language. Saved here for "reparsing" purposes.
+	 */
+	private static Language tclang;
+
+	/**
+	 * Generates a ClassDecl from the given parameters.
+	 *
+	 * In this implementation, the first parameter <b>must</b> be a TopCoder
+	 * ProblemComponent, and the second parameter <b>must</b> be a TopCoder
+	 * Language.
+	 *
+	 * As a side effect, the KawigiEdit language corresponding to the TopCoder
+	 * language given is set as the current language in the ProblemContext
+	 * class.
+	 *
+	 * @param parameters        TopCoder ProblemComponent and TopCoder Language
 	 **/
 	public ClassDecl getClassDecl(Object ... parameters)
 	{
-		ProblemComponent component = (ProblemComponent)parameters[0];
-		Language tclang = (Language)parameters[1];
-		
-		EditorLanguage lang = EditorLanguage.Java;
-		if (tclang.getId() == CPPLanguage.ID)
-			lang = EditorLanguage.CPP;
-		else if (tclang.getId() == JavaLanguage.ID)
-			lang = EditorLanguage.Java;
-		else if (tclang.getId() == CSharpLanguage.ID)
-			lang = EditorLanguage.CSharp;
-		else
-			lang = EditorLanguage.VB;
+		component = (ProblemComponent)parameters[0];
+		tclang = (Language)parameters[1];
+
+		EditorLanguage lang = null;
+		if (CPPLanguage.CPP_LANGUAGE == tclang)
+			lang = CPPLang.getInstance();
+		else if (JavaLanguage.JAVA_LANGUAGE == tclang)
+			lang = JavaLang.getInstance();
+		else if (CSharpLanguage.CSHARP_LANGUAGE == tclang)
+			lang = CSharpLang.getInstance();
+		else if (VBLanguage.VB_LANGUAGE == tclang)
+			lang = VBLang.getInstance();
+
 		ProblemContext.setLanguage(lang);
-		EditorDataType returnType = lang.getType(component.getReturnType().getDescriptor(tclang));
+		return parseClassDecl();
+	}
+
+	/**
+	 * Converting saved component and tclang into ClassDecl.
+	 **/
+	private static ClassDecl parseClassDecl()
+	{
+		EditorLanguage lang = ProblemContext.getLanguage();
+
+		// Converting TopCoder return type
+		EditorDataType returnType = EditorLanguage.getType(component.getReturnType().getDescriptor(tclang));
+
+		// Converting TopCoder parameter types
 		DataType[] tcParamTypes = component.getParamTypes();
 		EditorDataType[] paramTypes = new EditorDataType[tcParamTypes.length];
 		for (int i=0; i<tcParamTypes.length; i++)
-			paramTypes[i] = lang.getType(tcParamTypes[i].getDescriptor(tclang));
-		ClassDecl retval = new ClassDecl(component.getClassName(), new MethodDecl(component.getMethodName(), returnType, paramTypes, component.getParamNames()));
-		//test cases:
-		if (component.getTestCases() != null)
+			paramTypes[i] = EditorLanguage.getType(tcParamTypes[i].getDescriptor(tclang));
+
+		// Here we already can create final class declaration
+		ClassDecl retval = new ClassDecl(component.getClassName(),
+		                        new MethodDecl(component.getMethodName(), returnType,
+		                                       paramTypes, component.getParamNames()));
+
+		// Converting test cases:
+		TestCase[] tests = component.getTestCases();
+		if (null != tests)
 		{
-			TestCase[] tests = component.getTestCases();
-			for (int i=0; i<tests.length; i++)
-				retval.addTest(new Test(tests[i].getOutput(), tests[i].getInput()));
+			for (TestCase test : tests)
+			{
+				StringBuilder out = new StringBuilder(test.getOutput());
+				// We must not change array elements of getInput()
+				// because as of 03.12.2006 it changes text of problem statement
+				// shown to the user
+				String[] tcInputs = test.getInput();
+				StringBuilder[] inputs = new StringBuilder[tcInputs.length];
+				for (int j = 0; inputs.length > j; ++j) {
+					inputs[j] = new StringBuilder(tcInputs[j]);
+				}
+				lang.addTestCase(retval, inputs, out);
+			}
 		}
+
 		return retval;
+	}
+
+	/**
+	 * Converting saved component and tclang into ClassDecl once more.
+	 **/
+	public ClassDecl reparseClassDecl()
+	{
+		return parseClassDecl();
 	}
 }

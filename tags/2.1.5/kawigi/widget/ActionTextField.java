@@ -1,8 +1,13 @@
 package kawigi.widget;
-import kawigi.cmd.*;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.*;
-import javax.swing.event.*;
-import java.beans.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import kawigi.cmd.*;
+import kawigi.util.StringsUtil;
 
 /**
  *	Just a JTextField that can be configured and updated by an Action.
@@ -13,19 +18,40 @@ public class ActionTextField extends JTextField implements PropertyChangeListene
 	 *	The Action that this text field is configured against.
 	 **/
 	protected Action a;
-	
+
+	/**
+	 *	Constructor without parameters.
+	 **/
+	public ActionTextField()
+	{
+	}
+
 	/**
 	 *	Constructor that uses an Action (if you want to use any other parameters
 	 *	for the constructor, you should just use a JTextField).
 	 **/
 	public ActionTextField(Action a)
 	{
+		this();
+		setAction(a);
+	}
+
+	/**
+	 *	Changes the action for this field.
+	 **/
+	public void setAction(Action a)
+	{
+		if (null != this.a) {
+			this.a.removePropertyChangeListener(this);
+			removeActionListener(this.a);
+		}
+
 		this.a = a;
-		
+
 		if (a.getValue(DefaultAction.TEXT) != null)
-			setText((String)a.getValue(DefaultAction.TEXT));
+			setText(a.getValue(DefaultAction.TEXT).toString());
 		if (a.getValue(Action.SHORT_DESCRIPTION) != null)
-			setToolTipText((String)a.getValue(Action.SHORT_DESCRIPTION));
+			setToolTipText(a.getValue(Action.SHORT_DESCRIPTION).toString());
 		if (a.getValue(Action.MNEMONIC_KEY) != null)
 			setFocusAccelerator((char)((Integer)a.getValue(Action.MNEMONIC_KEY)).intValue());
 		setEnabled(a.isEnabled());
@@ -35,12 +61,12 @@ public class ActionTextField extends JTextField implements PropertyChangeListene
 		getDocument().addDocumentListener(this);
 		addActionListener(a);
 	}
-	
+
 	public void setColumns(String columns)
 	{
 		setColumns(Integer.parseInt(columns));
 	}
-	
+
 	/**
 	 *	Processes property changes from the action.
 	 **/
@@ -49,8 +75,8 @@ public class ActionTextField extends JTextField implements PropertyChangeListene
 		// Text fields should be able to have their text centralized here.
 		if (e.getPropertyName().equals(DefaultAction.TEXT))
 		{
-			if (!e.getNewValue().equals(getText()))
-				setText((String)e.getNewValue());
+			if (!StringsUtil.isEqual((CharSequence)e.getNewValue(), getText()))
+				setText(e.getNewValue().toString());
 		}
 		else if (e.getPropertyName().equals(Action.SHORT_DESCRIPTION))
 			setToolTipText((String)e.getNewValue());
@@ -63,7 +89,7 @@ public class ActionTextField extends JTextField implements PropertyChangeListene
 		else if (e.getPropertyName().equals(DefaultAction.VISIBLE))
 			setVisible(((Boolean)e.getNewValue()).booleanValue());
 	}
-	
+
 	/**
 	 *	Called when the text in the TextField changes.
 	 **/
@@ -71,7 +97,7 @@ public class ActionTextField extends JTextField implements PropertyChangeListene
 	{
 		textChanged();
 	}
-	
+
 	/**
 	 *	Called when the text in the TextField changes.
 	 **/
@@ -79,7 +105,7 @@ public class ActionTextField extends JTextField implements PropertyChangeListene
 	{
 		textChanged();
 	}
-	
+
 	/**
 	 *	Called when the text in the TextField changes.
 	 **/
@@ -87,7 +113,7 @@ public class ActionTextField extends JTextField implements PropertyChangeListene
 	{
 		textChanged();
 	}
-	
+
 	/**
 	 *	Officially changes the TEXT property of the action.
 	 **/

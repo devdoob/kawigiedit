@@ -1,12 +1,13 @@
 package kawigi.cmd;
-import java.awt.event.*;
-import javax.swing.*;
-import java.io.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import javax.swing.*;
 
 /**
  *	ActID enum - The master list of KawigiEdit commands.
- *	
+ *
  *	My idea is to use these to identify Action objects semi-uniquely (non-global
  *	commands may not quite be unique) in such a way that they will behave
  *	consistently on different UI or using different keystrokes, or even using
@@ -20,7 +21,7 @@ import java.awt.*;
  *	comes to porting old changes from KawigiEdit 1.* to KawigiEdit 2.0, since
  *	they really aren't the same program internally, and this enum is a big
  *	reason why).
- *	
+ *
  *	If you want to add your own commands to KawigiEdit, this is the preferred
  *	place to start - add a command entry here, create your own Action class
  *	(which inherits from kawigi.cmd.DefaultAction) to control what it does.
@@ -31,7 +32,7 @@ import java.awt.*;
 public enum ActID
 {
 	/*
-	
+
 	KawigiEdit's full recognized command list (is it long enough?)
 	The values are:
 	-	Accelerator
@@ -48,7 +49,7 @@ public enum ActID
 		as the template editor.  If a command should always operate on the same
 		view (like Save, Load, or Generate Code), they should be global.
 	*/
-	
+
 	//Basic Editor Commands:
 	actCut(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_T), "Cut", "Cut Selection", "Cut?.gif", EditorAction.class, false),
 	actCopy(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_C), "Copy", "Copy Selection", "Copy?.gif", EditorAction.class, false),
@@ -137,6 +138,10 @@ public enum ActID
 	actCancelConfig(null, new Integer(KeyEvent.VK_C), "Cancel", "Cancel config changes", null, SettingAction.class, true),
 	// File selector for the directory things are saved in.
 	actLocalDirField(null, new Integer(KeyEvent.VK_D), "Local Directory:", "Directory on your hard drive where programs and settings are saved", null, TextSettingAction.class, true, "kawigi.localpath", "."),
+	// Turn on automatic synchronization of source code with external file
+	actAutoFileSync(null, new Integer(KeyEvent.VK_A), "Auto synchronization with external file", "Do automatic loading and saving of the source from editor to file", null, BooleanSettingAction.class, true, "kawigi.file.sync", false),
+	// Prefer external file sources over sources given from TopCoder server
+	actPreferFileOpen(null, new Integer(KeyEvent.VK_P), "Always prefer external file to TC source", "When opening the problem always load source from file if it exists", null, BooleanSettingAction.class, true, "kawigi.file.prefer", false),
 	// Timeout before test processes are automatically killed.
 	actTimeout(null, new Integer(KeyEvent.VK_T), "Process Timeout:", "How long to wait before killing local processes (seconds)", null, NumberSettingAction.class, true, "kawigi.timeout", new int[]{10, 1, 100, 1}),
 	// Settings on the compile and test output text boxes.
@@ -196,6 +201,11 @@ public enum ActID
 	actVBFileName(null, null, "File Name:", "File name for VB files - use $PROBLEM$ to substitute for the problem name", null, TextSettingAction.class, true, "kawigi.language.vb.filename", "$PROBLEM$.vb"),
 	actVBCompileCommand(null, null, "Compile Command:", "Compile command for compiling VB files - use $PROBLEM$ to substitute for the problem name", null, TextSettingAction.class, true, "kawigi.language.vb.compiler", "vbc $PROBLEM$.vb"),
 	actVBRunCommand(null, null, "Run Command:", "Run command for VB programs - use $PROBLEM$ for the problem name and $CWD$ for the current directory", null, TextSettingAction.class, true, "kawigi.language.vb.run", File.separatorChar == '/' ? "mono $PROBLEM$.exe" : "$CWD$\\$PROBLEM$.exe"),
+	// Special C++ long long substitution parameters
+	actCPPLLType(null, null, "'long long' type:", "Name of type that have to be substituted instead of 'long long'.", null, TextSettingAction.class, true, "kawigi.language.cpp.lltype", "long long"),
+	actCPPLLConst(null, null, "'long long' constant:", "The way in which 'long long' constants will be surrounded.", null, TextSettingAction.class, true),
+	actCPPLLPrefix(null, null, "        prefix:", "Prefix that should be put before 'long long' constants.", null, TextSettingAction.class, true, "kawigi.language.cpp.llprefix", ""),
+	actCPPLLPostfix(null, null, "        postfix:", "Postfix that should be put after 'long long' constants.", null, TextSettingAction.class, true, "kawigi.language.cpp.llpostfix", "ll"),
 	// Template Editor commands:
 	actOpenTemplate(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_O), "Open", "Open Template", "Open?.gif", TemplateAction.class, true),
 	actSaveTemplate(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_S), "Save", "Save Template", "Save?.gif", TemplateAction.class, true),
@@ -227,10 +237,32 @@ public enum ActID
 	actCtxMenu(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_I), "Context Menu", "Brings up the context menu", null, EditorAction.class, false),
 	// Inserts the <%:testing-code%> tag.
 	actInsertTestCode(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_E), "Test Code Tag", "Inserts the KawigiEdit tag for testing code", null, EditorAction.class, false),
+	// Brings up a dialog for editing test cases.
+	actTestCases(null, null, "Test Cases", "Calling the test cases editor for 'Run Tests'", null, TestCasesAction.class, true),
+	// Edit the single test case.
+	actEditTestCase(null, null, "Edit", "Change this test case", null, TestCasesAction.class, true),
+	// Delete some test case.
+	actDeleteTestCase(null, null, "Delete", "Delete this test case", null, TestCasesAction.class, true),
+	// Add new test case.
+	actAddTestCase(null, null, "Add", "Add new test case", null, TestCasesAction.class, true),
+	// Add all test cases from examples.
+	actAddExTestCases(null, null, "Add from examples", "Add all test cases from examples", null, TestCasesAction.class, true),
+	// Calling a dialog for editing array params of the test case.
+	actEditArrayParam(null, null, "modify", "Change this array parameter", null, TestCasesAction.class, false),
+	// Some action that realy is not an action. It needed for showing text in textboxes and saving changes in it
+	actTestCaseParamsTexts(null, null, null, null, null, TestCasesAction.class, false),
+	// Saving changed test case parameters.
+	actSaveCaseParams(null, null, "OK", null, null, TestCasesAction.class, true),
+	// Cancel editing test case parameters.
+	actCancelCaseParams(null, null, "Cancel", null, null, TestCasesAction.class, true),
+	// Saving array filling of test case parameter.
+	actSaveArrayParam(null, null, "OK", null, null, TestCasesAction.class, true),
+	// Cancel editing of array parameter.
+	actCancelArrayParam(null, null, "Cancel", null, null, TestCasesAction.class, true),
 	// Adding this to the end so it's easier to cut and paste actions and modify
 	// them at the end.  Call me lazy.
 	actEnd(null, null, null, null, null, null, true);
-	
+
 	public KeyStroke accelerator;
 	public Integer mnemonic;
 	public String label;
@@ -240,7 +272,7 @@ public enum ActID
 	public Object defaultValue;
 	public Class<? extends DefaultAction> actionClass;
 	private boolean global;
-	
+
 	/**
 	 *	Creates the ActID instances.
 	 **/
@@ -251,11 +283,11 @@ public enum ActID
 		this.label = label;
 		this.tooltip = tooltip;
 		if (iconFile != null)
-			this.iconFile = "rc" + File.separator + iconFile;
+			this.iconFile = "rc/" + iconFile;
 		this.actionClass = actionClass;
 		this.global = global;
 	}
-	
+
 	/**
 	 *	Creates the ActID instances for settings.
 	 **/
@@ -265,7 +297,7 @@ public enum ActID
 		this.preference = pref;
 		this.defaultValue = defaultValue;
 	}
-	
+
 	/**
 	 *	Use [actid].isGlobal() to figure out if it is owned by the global
 	 *	dispatcher or if it could be associated with (multiple?) sub-dispatchers.
