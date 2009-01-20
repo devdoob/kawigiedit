@@ -1,0 +1,13 @@
+<VerticalPanel>
+	<HorizontalPanel>
+		<ProblemTimer DispatcherName="Timer"/>
+		<EditorPanel Name="Source Code" DispatcherName="EditorPanel" />
+	</HorizontalPanel>
+	<HorizontalPanel>
+		<JButton Action="actGenerateCode"/>
+		<!-- Challenge tools -->
+		<JButton Action="actLaunchConfig"/>
+		<JButton Action="actSaveLocal"/>
+		<JButton Action="actLoad"/>
+	</HorizontalPanel>
+</VerticalPanel>
