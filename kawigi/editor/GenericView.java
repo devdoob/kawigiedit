@@ -1,23 +1,20 @@
 package kawigi.editor;
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Map;
-import javax.swing.event.DocumentEvent;
+import kawigi.properties.*;
 import javax.swing.text.*;
-
-import kawigi.properties.PrefFactory;
-import kawigi.properties.PrefProxy;
+import javax.swing.event.*;
+import java.awt.*;
+import java.awt.font.*;
+import java.awt.geom.*;
+import java.util.*;
+import java.io.*;
 
 /**
  *	Superclass of all language-specific views in KawigiEdit.
- *
+ *	
  *	This class handles the custom tab stop, pair matching, has some shared
  *	methods for syntax highlighting, and paints the KawigiEdit watermark in the
  *	background of the editor.
- *
+ *	
  *	As many people as have complained about the watermark and asked for a way
  *	to remove it, I was surprised when I changed it to blue and people said they
  *	don't like it as much as the old one that used "TopCoder" colors.
@@ -48,12 +45,12 @@ public class GenericView extends PlainView
 	 *	Colors for various token types.
 	 **/
 	protected static Color keywordColor, typeColor, operatorColor, classColor, stringColor, commentColor, directiveColor, tagColor;
-
+	
 	static
 	{
 		resetTabStop();
 	}
-
+	
 	/**
 	 *	initializes all the syntax colors.
 	 **/
@@ -69,7 +66,7 @@ public class GenericView extends PlainView
 		directiveColor = prefs.getColor("kawigi.editor.DirectiveColor", new Color(255, 127, 127));
 		tagColor = prefs.getColor("kawigi.editor.TemplateTagColor", new Color(64, 192, 255));
 	}
-
+	
 	/**
 	 *	Reads a keywords file and initializes the map to appropriately color
 	 *	those tokens.
@@ -104,11 +101,11 @@ public class GenericView extends PlainView
 		{
 		}
 	}
-
+	
 	/**
 	 *	Checks the property kawigi.editor.tabstop and sets the tabstop used in
 	 *	GenericView and derivatives to its value.
-	 *
+	 *	
 	 *	It sets the property and the tabstop to 4 if the property isn't set.
 	 **/
 	public static void resetTabStop()
@@ -118,7 +115,7 @@ public class GenericView extends PlainView
 		matchParens = prefs.getBoolean("kawigi.editor.matchparens", true);
 		matchParensColor = prefs.getColor("kawigi.editor.matchparenscolor", new Color(64, 64, 128));
 	}
-
+	
 	/**
 	 *	Just forwards that Element on down.
 	 **/
@@ -126,11 +123,11 @@ public class GenericView extends PlainView
 	{
 		super(e);
 	}
-
+	
 	/**
 	 *	A little hack to put a "TopCoder-ish" logo and a copycat logo for
 	 *	KawigiEdit in the background of the text pane.
-	 *
+	 *	
 	 *	I know, it just makes me seem like I need attention or something, but I
 	 *	tried to at least make it look nice and non-intrusive.
 	 **/
@@ -148,15 +145,15 @@ public class GenericView extends PlainView
 		g.drawString(" KE ", (int)bounds.getWidth()/2+(int)bounds.getX()-g.getFontMetrics().stringWidth("[KE]")/2, g.getFontMetrics().getHeight());
 		JTextComponent host = (JTextComponent)getContainer();
 		g.setFont(host.getFont());
-
+		
 		if (matchParens)
 		{
-			ArrayList<Interval> intervals = getIntervals();
+			ArrayList intervals = getIntervals();
 			Interval use = null;
 			int caret = host.getCaretPosition();
 			for (int i=0; i<intervals.size(); i++)
 			{
-				Interval in = intervals.get(i);
+				Interval in = (Interval)intervals.get(i);
 				if (caret >= in.getStartIndex() && caret <= in.getEndIndex() && (use == null || in.getEndIndex() - in.getStartIndex() < use.getEndIndex() - use.getStartIndex()))
 					use = in;
 			}
@@ -191,10 +188,10 @@ public class GenericView extends PlainView
 		}
 		super.paint(g, a);
 	}
-
+	
 	/**
 	 *	Programmers don't like 8-space tabstops.
-	 *
+	 *	
 	 *	At least I don't, so I set the default to 4.  At Ryan's request, this is
 	 *	now configurable.
 	 **/
@@ -202,11 +199,11 @@ public class GenericView extends PlainView
 	{
 		return tabstop;
     }
-
+    
 	/**
 	 *	Returns an <code>ArrayList</code> of Interval objects representing code
 	 *	block intervals in the document.
-	 *
+	 *	
 	 *	This default implementation matches curly braces, square brackets and
 	 *	parentheses.
 	 **/
@@ -230,15 +227,15 @@ public class GenericView extends PlainView
 		}
 		return ret;
 	}
-
+	
 	/**
 	 *	Set parseIndex to 0 and lineIndex to 1 before calling findIntervals.
 	 **/
 	protected int parseIndex, lineIndex;
-
+	
 	/**
 	 *	Helper function to help with <code>getIntervals</code>.
-	 *
+	 *	
 	 *	Puts the intervals into the list in an in-order traversal of curly
 	 *	braces.
 	 **/
@@ -312,11 +309,11 @@ public class GenericView extends PlainView
 			parseIndex++;
 		}
 	}
-
+	
 	/**
 	 *	Searches for a String identifier for a block in the text before the
 	 *	block.
-	 *
+	 *	
 	 *	May or may not be particularly useful in many situations.  This is
 	 *	called by findIntervals.
 	 **/
@@ -342,10 +339,10 @@ public class GenericView extends PlainView
 		}
 		return new Interval(startline, endline, index+1, endindex+startEnd[1].length(), ret.trim(), startEnd[0], startEnd[1], block);
 	}
-
+	
 	/**
 	 *	NOTHING BUT A HACK (and a weird, dirty one at that).
-	 *
+	 *	
 	 *	This is a "fix" to the problem where after undoing exceptions occurred
 	 *	causing the cursor to not update its position after edits (which leads
 	 *	to a really strange editing experience after that point, as you might
@@ -354,7 +351,7 @@ public class GenericView extends PlainView
 	 *	take by spoofing its parent element and calling an update method.  Any
 	 *	cleaner hack seemed impossible due to the use of private methods and
 	 *	even package-level access classes.
-	 *
+	 *	
 	 *	This appears to be a blatant bug in Swing.  I think a real fix to this
 	 *	would be in AbstractDocument$BranchElement.getEndOffset(), but the
 	 *	necessary check here might not really solve the problem, just get it out
@@ -369,13 +366,13 @@ public class GenericView extends PlainView
 	protected void updateDamage(DocumentEvent changes, Shape a, ViewFactory f)
 	{
 		//most of this first code is from the beginning of the method it overrides.
-		/*Component host = getContainer();
+		Component host = getContainer();
 		updateMetrics();
 		Element elem = getElement();
 		DocumentEvent.ElementChange ec = changes.getChange(elem);
 		Element[] added = (ec != null) ? ec.getChildrenAdded() : null;
 		Element[] removed = (ec != null) ? ec.getChildrenRemoved() : null;
-		if (((added != null) && (added.length > 0)) ||
+		if (((added != null) && (added.length > 0)) || 
 		((removed != null) && (removed.length > 0))) {
 			//this part is my silly hack.
 			View root = getParent();
@@ -386,25 +383,25 @@ public class GenericView extends PlainView
 			//end of silly hack.
 			preferenceChanged(null, true, true);
 			host.repaint();
-		}*/
+		}
 		super.updateDamage(changes, a, f);
 	}
-
+    
     /**
      *	Part 2 of my super-dirty hack.
-     *
+     *	
      *	This is one of the most retarded classes I've ever written.
      **/
-    /*class FakeRootView extends PlainView
+    class FakeRootView extends PlainView
     {
 		public FakeRootView(Element e)
 		{
 			super(e);
 		}
-
+		
     	public Container getContainer()
     	{
     		return new CodePane();
     	}
-    }*/
+    }
 }

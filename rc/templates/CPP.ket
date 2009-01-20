@@ -2,7 +2,6 @@
 #include <list>
 #include <map>
 #include <set>
-#include <queue>
 #include <deque>
 #include <stack>
 #include <bitset>
@@ -20,13 +19,13 @@
 
 using namespace std;
 
-
 class <%:class-name%> {
 public:
-	<%:return-type%> <%:method-name%>(<%:param-list%>) {
-		<%:set-caret%>
-	}
+	<%:return-type%> <%:method-name%>(<%:param-type-list%>);
 };
 
+<%:return-type%> <%:class-name%>::<%:method-name%>(<%:param-list%>) {
+	<%:set-caret%>
+}
 
-<%:testing-code%>
+//Powered by [KawigiEditNonTest] modified by pivanof!

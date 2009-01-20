@@ -1,9 +1,7 @@
 package kawigi.cmd;
-
 import kawigi.editor.*;
 import kawigi.widget.*;
 import java.awt.*;
-import java.awt.event.FocusListener;
 import javax.swing.*;
 import javax.xml.parsers.*;
 import java.io.*;
@@ -151,10 +149,9 @@ public class UIHandler extends DefaultHandler
 		Action action = null;
 		if (act != null)
 			action = dispatcher.getAction(act);
-		String classname = qName;
 		try
 		{
-			Class controlClass = getClass(classname);
+			Class controlClass = getClass(qName);
 			Container control = null;
 			if (action != null)
 			{
@@ -187,8 +184,6 @@ public class UIHandler extends DefaultHandler
 				{
 					reportError(new Exception("No Action constructor available for " + controlClass), false);
 				}
-				else if (action instanceof FocusListener)
-					control.addFocusListener((FocusListener)action);
 			}
 			else if (attributes.getValue("MenuID") != null)
 			{
@@ -277,14 +272,6 @@ public class UIHandler extends DefaultHandler
 					Dispatcher.setWindow((JFrame)currentComponent);
 				else if (name.equalsIgnoreCase("EditorPanel"))
 					Dispatcher.setEditorPanel((EditorPanel)currentComponent);
-				else if (name.equalsIgnoreCase("LocalCode"))
-					Dispatcher.setLocalCodeEditorPanel((EditorPanel)currentComponent);
-				else if (name.equalsIgnoreCase("TestCode"))
-					Dispatcher.setTestEditorPanel((EditorPanel)currentComponent);
-				else if (name.equalsIgnoreCase("Compile"))
-					Dispatcher.setCompileComponent((SimpleOutputComponent)currentComponent);
-				else if (name.equalsIgnoreCase("Output"))
-					Dispatcher.setOutputComponent((SimpleOutputComponent)currentComponent);
 				else if (name.equalsIgnoreCase("TabbedPane"))
 					Dispatcher.setTabbedPane((JTabbedPane)currentComponent);
 				else if (name.equalsIgnoreCase("Timer"))
@@ -368,7 +355,7 @@ public class UIHandler extends DefaultHandler
 	 **/
 	private static Class getClass(String className) throws ClassNotFoundException
 	{
-		ClassNotFoundException e = null;
+		ClassNotFoundException e;
 		try
 		{
 			return Class.forName(className);
@@ -415,7 +402,7 @@ public class UIHandler extends DefaultHandler
 		System.err.println("----------------------");
 		try
 		{
-			JOptionPane.showMessageDialog((Component)null, e, "Error loading UI", warning ? JOptionPane.WARNING_MESSAGE : JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e, "Error loading UI", warning ? JOptionPane.WARNING_MESSAGE : JOptionPane.ERROR_MESSAGE);
 		}
 		catch (HeadlessException ex)
 		{

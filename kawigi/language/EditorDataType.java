@@ -3,7 +3,7 @@ package kawigi.language;
 /**
  *	This enum represents all the data types supported by TopCoder as input or
  *	output types.
- *
+ *	
  *	Technically, CharacterArray probably won't be used.
  **/
 public enum EditorDataType
@@ -25,9 +25,9 @@ public enum EditorDataType
 	 **/
 	Long(null),
 	/**
-	 *	boolean type.
+	 *	char type.
 	 **/
-	Boolean(null),
+	Character(null),
 	/**
 	 *	String[] or vector<string> type.
 	 **/
@@ -43,22 +43,26 @@ public enum EditorDataType
 	/**
 	 *	long[] or vector<long long> type.
 	 **/
-	LongArray(Long);
-
+	LongArray(Long),
+	/**
+	 *	char[] or vector<char> type.
+	 **/
+	CharacterArray(Character);
+	
 	/**
 	 *	If this type is an array type, this is the type of its elements.  If it
 	 *	isn't an array type, this is null.
 	 **/
-	private final EditorDataType primitiveType;
-
+	private EditorDataType primitiveType;
+	
 	/**
 	 *	Constructs enum values.
 	 **/
-	private EditorDataType(EditorDataType primType)
+	private EditorDataType(EditorDataType primitiveType)
 	{
-		primitiveType = primType;
+		this.primitiveType = primitiveType;
 	}
-
+	
 	/**
 	 *	Returns the type of elements of this type if this is an array type.
 	 **/
@@ -66,33 +70,21 @@ public enum EditorDataType
 	{
 		return primitiveType;
 	}
-
+	
 	/**
 	 *	Returns true if this type represents an array type.
 	 **/
 	public boolean isArrayType()
 	{
-		return null != primitiveType;
+		return primitiveType != null;
 	}
-
-	/**
-	 *	Returns true if this type represents an array type of type primType.
-	 **/
-	public boolean isArrayType(EditorDataType type)
-	{
-		return type == primitiveType;
-	}
-
+	
 	/**
 	 *	Returns true if type is the same as this type, or if either this type or
 	 *	the given type represents an array/vector of the other.
 	 **/
 	public boolean isType(EditorDataType type)
 	{
-		return this == type || type.isArrayType(this) || isArrayType(type);
-	}
-
-	public boolean isString() {
-		return isType(String);
+		return this == type || (type.isArrayType() && type.getPrimitiveType() == this) || (isArrayType() && getPrimitiveType() == type);
 	}
 }

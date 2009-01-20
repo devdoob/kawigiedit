@@ -3,7 +3,6 @@ import kawigi.editor.*;
 import kawigi.widget.*;
 import kawigi.properties.*;
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.*;
@@ -23,7 +22,7 @@ import java.util.*;
  *	subdispatchers that are bound to objects (currently always CodePanes) on
  *	which they act.
  **/
-public class Dispatcher implements FocusListener, WindowListener, HierarchyListener
+public class Dispatcher implements FocusListener
 {
 	/**
 	 *	Map of ActIDs to Actions that have already been instantiated on this
@@ -37,15 +36,11 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 	/**
 	 *	The top-level window containing KawigiEdit.
 	 **/
-	//private static JFrame window;
+	private static JFrame window;
 	/**
 	 *	Global editor panels required by several actions.
 	 **/
-	private static EditorPanel editorPanel, localCodeEditorPanel, testEditorPanel, templateEditorPanel;
-	/**
-	 *	Global output displays.
-	 **/
-	private static SimpleOutputComponent outputComp, compileComp;
+	private static EditorPanel editorPanel, templateEditorPanel;
 	/**
 	 *	Global reference to the TabbedPane that has everything on it.
 	 **/
@@ -121,22 +116,11 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 	}
 
 	/**
-	 *	Deletes subdispatcher from internal structures and forgets it.
-	 *  Method trusts to caller and doesn't check disp if it's null or
-	 *  if it's really was created with createSubDispatcher.
-	 **/
-	public void eraseSubDispatcher(Dispatcher disp)
-	{
-		globalDispatcher.contextualDispatchers.remove(disp);
-		disp.context.removeFocusListener(globalDispatcher);
-	}
-
-	/**
 	 *	Sets the main window KawigiEdit is on.
 	 **/
 	public static void setWindow(JFrame window)
 	{
-		//Dispatcher.window = window;
+		Dispatcher.window = window;
 	}
 
 	/**
@@ -147,7 +131,7 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 	 **/
 	public static JFrame getWindow()
 	{
-		/*if (window == null)
+		if (window == null)
 		{
 			// Try walking the component hierarchy to see if we can reach a top-level
 			// window.
@@ -157,15 +141,7 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 			if (c != null)
 				window = (JFrame)c;
 		}
-		return window;*/
-
-		if (editorPanel != null) {
-			Container cont = editorPanel.getTopLevelAncestor();
-			if (cont instanceof JFrame)
-				return (JFrame)cont;
-		}
-
-		return null;
+		return window;
 	}
 
 	/**
@@ -182,19 +158,6 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 	public static void setEditorPanel(EditorPanel panel)
 	{
 		editorPanel = panel;
-		hookMainWindow();
-	}
-	
-	public static void hookMainWindow()
-	{
-		// We need to catch operations on main window to make auto file synchronization possible
-		JFrame wind = getWindow();
-		if (wind == null) {
-			editorPanel.addHierarchyListener(getGlobalDispatcher());
-		}
-		else {
-			wind.addWindowListener(getGlobalDispatcher());
-		}
 	}
 
 	/**
@@ -203,86 +166,6 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 	public static CodePane getCodePane()
 	{
 		return editorPanel.getCodePane();
-	}
-
-	/**
-	 *	Gets the EditorPanel for the Local Code tab.
-	 **/
-	public static EditorPanel getLocalCodeEditorPanel()
-	{
-		return localCodeEditorPanel;
-	}
-
-	/**
-	 *	Sets the EditorPanel for the Local Code tab.
-	 **/
-	public static void setLocalCodeEditorPanel(EditorPanel panel)
-	{
-		localCodeEditorPanel = panel;
-	}
-
-	/**
-	 *	Gets the CodePane for the Local Code tab.
-	 **/
-	public static CodePane getLocalCodePane()
-	{
-		return localCodeEditorPanel.getCodePane();
-	}
-
-	/**
-	 *	Gets the EditorPanel for the Testing Code editor.
-	 **/
-	public static EditorPanel getTestEditorPanel()
-	{
-		return testEditorPanel;
-	}
-
-	/**
-	 *	Sets the EditorPanel for the Testing Code editor.
-	 **/
-	public static void setTestEditorPanel(EditorPanel panel)
-	{
-		testEditorPanel = panel;
-	}
-
-	/**
-	 *	Gets the CodePane for the Testing Code editor.
-	 **/
-	public static CodePane getTestCodePane()
-	{
-		return testEditorPanel.getCodePane();
-	}
-
-	/**
-	 *	Returns the component that displays stuff printed from test runs.
-	 **/
-	public static SimpleOutputComponent getOutputComponent()
-	{
-		return outputComp;
-	}
-
-	/**
-	 *	Sets the component that displays stuff printed from test runs.
-	 **/
-	public static void setOutputComponent(SimpleOutputComponent comp)
-	{
-		outputComp = comp;
-	}
-
-	/**
-	 *	Returns the component that displays compile output.
-	 **/
-	public static SimpleOutputComponent getCompileComponent()
-	{
-		return compileComp;
-	}
-
-	/**
-	 *	Sets the component that displays compile output.
-	 **/
-	public static void setCompileComponent(SimpleOutputComponent comp)
-	{
-		compileComp = comp;
 	}
 
 	/**
@@ -354,16 +237,6 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 		return globalFileChooser;
 	}
 
-	public static long getLastEditTime()
-	{
-		return getCodePane().getLastEditTime();
-	}
-	
-	public static void resetLastEditTime()
-	{
-		getCodePane().resetLastEditTime();
-	}
-	
 	/**
 	 *	Gets the Action instance for the given ActID.
 	 **/
@@ -451,7 +324,6 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 				Constructor<? extends DefaultAction> c = cl.getConstructor(ActID.class, context.getClass());
 				DefaultAction act = c.newInstance(actid, context);
 				actionMap.put(actid, act);
-				context.addFocusListener(act);
 				return act;
 			}
 			catch (Throwable t)
@@ -462,7 +334,6 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 			{
 				DefaultAction act = cl.newInstance();
 				actionMap.put(actid, act);
-				context.addFocusListener(act);
 				return act;
 			}
 			catch (Throwable t)
@@ -493,7 +364,7 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 	{
 		try
 		{
-			JOptionPane.showMessageDialog(getWindow(), t, "Command dispatch error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(window, t, "Command dispatch error", JOptionPane.ERROR_MESSAGE);
 		}
 		catch (HeadlessException ex)
 		{
@@ -516,7 +387,7 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 				d.UIRefresh();
 		}
 	}
-	
+
 	/**
 	 *	Notifies the global dispatcher that a new "context" has gotten focus.
 	 **/
@@ -534,43 +405,7 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 	/**
 	 *	Does nothing - part of the FocusListener interface.
 	 **/
-	public void focusLost(FocusEvent e) {}
-
-	public void windowActivated(WindowEvent e) {
-		LocalTestAction.requestFileSync();
-		getCodePane().requestFocusInWindow();
-	}
-
-	public void windowDeactivated(WindowEvent e) {
-		LocalTestAction.requestFileSync();
-	}
-
-	public void windowClosed(WindowEvent e) {}
-
-	public void windowClosing(WindowEvent e) {}
-
-	public void windowDeiconified(WindowEvent e) {}
-
-	public void windowIconified(WindowEvent e) {}
-
-	public void windowOpened(WindowEvent e) {}
-	
-	/**
-	 * Part of HierarchyListener interface. Used to catch the moment of showing up
-	 * of newly set up problem.
-	 * 
-	 * @param e		Event fired
-	 */
-	public void hierarchyChanged(HierarchyEvent e) {
-		if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && editorPanel.isShowing()) {
-			JFrame wind = Dispatcher.getWindow();
-			if (wind != null) {
-				wind.removeWindowListener(this);
-				wind.addWindowListener(this);
-				editorPanel.removeHierarchyListener(this);
-				
-				windowActivated(null);
-			}
-		}
+	public void focusLost(FocusEvent e)
+	{
 	}
 }

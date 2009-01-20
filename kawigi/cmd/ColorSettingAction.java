@@ -4,7 +4,6 @@ import kawigi.editor.*;
 import kawigi.widget.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 
 /**
  *	Setting action implementation for color settings.
@@ -18,14 +17,14 @@ public class ColorSettingAction extends SettingAction
 	{
 		super(cmdid);
 	}
-	
+
 	/**
 	 *	Does nothing :-)
 	 **/
 	public void actionPerformed(ActionEvent e)
 	{
 	}
-	
+
 	/**
 	 *	Overridden to override the COLOR property, which is recognized by
 	 *	kawigi.widget.ColorSwatchDropdown as the value for the currently
@@ -43,7 +42,7 @@ public class ColorSettingAction extends SettingAction
 		}
 		return super.getValue(key);
 	}
-	
+
 	/**
 	 *	Overridden to set the correct setting if the COLOR property is changed.
 	 **/
@@ -58,13 +57,6 @@ public class ColorSettingAction extends SettingAction
 				// Do notifications:
 				switch (cmdid)
 				{
-					case actTestBackground:
-					case actTestForeground:
-						if (Dispatcher.getCompileComponent() != null)
-							Dispatcher.getCompileComponent().updatePrefs();
-						if (Dispatcher.getOutputComponent() != null)
-							Dispatcher.getOutputComponent().updatePrefs();
-						break;
 					case actTimerLEDColor:
 					case actTimerBGColor:
 					case actTimerUnlitColor:
@@ -76,8 +68,6 @@ public class ColorSettingAction extends SettingAction
 					case actSelectedTextColor:
 						if (Dispatcher.getCodePane() != null)
 							Dispatcher.getCodePane().resetPrefs();
-						if (Dispatcher.getLocalCodePane() != null)
-							Dispatcher.getLocalCodePane().resetPrefs();
 						break;
 					case actSyntaxKeywordColor:
 					case actSyntaxTypeColor:

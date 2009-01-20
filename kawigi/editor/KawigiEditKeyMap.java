@@ -2,13 +2,12 @@ package kawigi.editor;
 import kawigi.cmd.*;
 import javax.swing.*;
 import javax.swing.text.*;
-import javax.swing.event.*;
 import java.util.*;
 import java.awt.event.*;
 
 /**
  *	Keymap implementation used by KawigiEdit's CodePanes.
- *	
+ *
  *	If you want to map a keystroke in the editor to some specific action, this
  *	is the place to do that.  Also, I've long had a theory that if I got with
  *	some people and implemented one or two more keymaps to swap with this one,
@@ -29,18 +28,18 @@ public class KawigiEditKeyMap implements Keymap
 	 *	Parent keymap that we go to if necessary.
 	 **/
 	private Keymap parent;
-	
+
 	/**
 	 *	Constructs a KawigiEditKeyMap with the set of actions we bind to
 	 *	keystrokes in the editor.
-	 *	
+	 *
 	 *	Uses editorSubDispatcher to create all the necessary actions.
 	 **/
 	public KawigiEditKeyMap(Dispatcher editorSubDispatcher)
 	{
 		keymap = new HashMap<KeyStroke,Action>();
 		defaultAction = null;
-		
+
 		// What follows is a list of keystrokes recognized by default by the code editors
 		// in KawigiEdit and what they do:
 		keymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK), editorSubDispatcher.getAction(ActID.actCut));
@@ -68,9 +67,8 @@ public class KawigiEditKeyMap implements Keymap
 		keymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), editorSubDispatcher.getAction(ActID.actFindNext));
 		keymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK), editorSubDispatcher.getAction(ActID.actAddSnippetDlg));
 		keymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), editorSubDispatcher.getAction(ActID.actCtxMenu));
-		keymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK), editorSubDispatcher.getAction(ActID.actInsertTestCode));
 	}
-	
+
 	/**
 	 *	Binds an action to a keystroke.
 	 **/
@@ -78,7 +76,7 @@ public class KawigiEditKeyMap implements Keymap
 	{
 		keymap.put(key, a);
 	}
-	
+
 	/**
 	 *	Returns a bound action for the given KeyStroke.
 	 **/
@@ -91,7 +89,7 @@ public class KawigiEditKeyMap implements Keymap
 		else
 			return null;
 	}
-	
+
 	/**
 	 *	Gets all the actions that are bound by this KeyMap.
 	 **/
@@ -102,7 +100,7 @@ public class KawigiEditKeyMap implements Keymap
 		coll.toArray(ret);
 		return ret;
 	}
-	
+
 	/**
 	 *	Gets all the keystrokes that are bound by this KeyMap.
 	 **/
@@ -113,7 +111,7 @@ public class KawigiEditKeyMap implements Keymap
 		set.toArray(ret);
 		return ret;
 	}
-	
+
 	/**
 	 *	Returns the default action for unbound keystrokes.
 	 **/
@@ -121,7 +119,7 @@ public class KawigiEditKeyMap implements Keymap
 	{
 		return defaultAction != null ? defaultAction : parent != null ? parent.getDefaultAction() : null;
 	}
-	
+
 	/**
 	 *	Returns the KeyStrokes that execute the given action.
 	 **/
@@ -137,7 +135,7 @@ public class KawigiEditKeyMap implements Keymap
 		keystrokes.toArray(ret);
 		return ret;
 	}
-	
+
 	/**
 	 *	Returns the name of this keymap.
 	 **/
@@ -145,15 +143,15 @@ public class KawigiEditKeyMap implements Keymap
 	{
 		return "KawigiEdit CodePane Keystrokes";
 	}
-	
+
 	/**
 	 *	Returns the parent of this keymap.
 	 **/
-	public Keymap getResolveParent() 
+	public Keymap getResolveParent()
 	{
 		return parent;
 	}
-	
+
 	/**
 	 *	Returns true if a command is bound to the given key and it's currently
 	 *	available.
@@ -162,7 +160,7 @@ public class KawigiEditKeyMap implements Keymap
 	{
 		return keymap.containsKey(key) && keymap.get(key).isEnabled();
 	}
-	
+
 	/**
 	 *	Clears the bindings in the keymap.
 	 **/
@@ -170,7 +168,7 @@ public class KawigiEditKeyMap implements Keymap
 	{
 		keymap.clear();
 	}
-	
+
 	/**
 	 *	Clears a specific keystroke binding.
 	 **/
@@ -178,7 +176,7 @@ public class KawigiEditKeyMap implements Keymap
 	{
 		keymap.remove(keys);
 	}
-	
+
 	/**
 	 *	Sets the default action.
 	 **/
@@ -186,7 +184,7 @@ public class KawigiEditKeyMap implements Keymap
 	{
  		defaultAction = a;
 	}
- 	
+
  	/**
  	 *	Sets the parent keymap.
  	 **/

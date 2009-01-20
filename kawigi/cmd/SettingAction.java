@@ -84,16 +84,9 @@ public class SettingAction extends DefaultAction
 					dialog.getContentPane().add(UIHandler.loadMenu(MenuID.ConfigPanel, Dispatcher.getGlobalDispatcher()));
 					dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 					dialog.pack();
-					dialog.addWindowListener(
-							new WindowAdapter() {
-								public void windowClosing(WindowEvent e) {
-									Dispatcher.getGlobalDispatcher().runCommand(ActID.actCancelConfig);
-								}
-							});
 				}
 				if (tempPrefs == null)
 					tempPrefs = new ChainedPrefs(PrefFactory.getPrefs());
-				Dispatcher.getGlobalDispatcher().UIRefresh();
 				dialog.setVisible(true);
 				break;
 			case actCommitConfig:
@@ -139,13 +132,7 @@ public class SettingAction extends DefaultAction
 		JavaView.initColors();
 		VBView.initColors();
 		GenericView.resetTabStop();
-		if (Dispatcher.getCompileComponent() != null)
-			Dispatcher.getCompileComponent().updatePrefs();
-		if (Dispatcher.getOutputComponent() != null)
-			Dispatcher.getOutputComponent().updatePrefs();
 		if (Dispatcher.getEditorPanel() != null)
 			Dispatcher.getCodePane().resetPrefs();
-		if (Dispatcher.getLocalCodeEditorPanel() != null)
-			Dispatcher.getLocalCodePane().resetPrefs();
 	}
 }

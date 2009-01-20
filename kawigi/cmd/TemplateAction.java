@@ -88,7 +88,7 @@ public class TemplateAction extends DefaultAction
 				save(false);
 				break;
 			case actOpenDefaultTemplate:
-				language = (String)JOptionPane.showInputDialog(Dispatcher.getTemplateEditor(), "Choose Default Template to Open", "Choose Template Language", JOptionPane.QUESTION_MESSAGE, null, new Object[]{"java.ket", "cpp.ket", "csharp.ket", "vb.ket"}, "java.ket");
+				language = (String)JOptionPane.showInputDialog(Dispatcher.getTemplateEditor(), "Choose Default Template to Open", "Choose Template Language", JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Java.ket", "CPP.ket", "CSharp.ket", "VB.ket"}, "Java.ket");
 				if (language != null)
 				{
 					InputStream stream = getClass().getClassLoader().getResourceAsStream("rc/templates/" + language);

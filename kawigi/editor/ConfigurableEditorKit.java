@@ -1,7 +1,4 @@
 package kawigi.editor;
-import java.io.IOException;
-import java.io.Reader;
-
 import javax.swing.text.*;
 
 /**

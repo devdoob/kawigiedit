@@ -2,8 +2,6 @@
 	<Category MenuID="RootSnippetCategory"/>
 	<JMenuItem Action="actAddSnippetDlg"/>
 	<JSeparator/>
-	<JMenuItem Action="actInsertTestCode"/>
-	<JSeparator/>
 	<JMenuItem Action="actCut"/>
 	<JMenuItem Action="actCopy"/>
 	<JMenuItem Action="actPaste"/>

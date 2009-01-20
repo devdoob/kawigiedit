@@ -14,16 +14,16 @@ public class VBView extends GenericView
 	 *	A map from token to its color.
 	 **/
 	protected static Hashtable<String,Color> colorHash;
-
+	
 	static
 	{
 		initColors();
 	}
-
+	
 	/**
 	 *	Initializes the keywords/tokens and their colors.
-	 *
-	 *	What this basically does is calls GenericView.getColors and
+	 *	
+	 *	What this basically does is calls GenericView.getColors and 
 	 *	GenericView.readKeywords.  It is called when the class is loaded and
 	 *	any time when the color settings might have changed.
 	 **/
@@ -31,9 +31,9 @@ public class VBView extends GenericView
 	{
 		colorHash = new Hashtable<String,Color>();
 		getColors();
-		readKeywords("vb", false, colorHash);
+		readKeywords("VB", false, colorHash);
 	}
-
+	
 	/**
 	 *	Creates an instance of VBView and passes along the Element.
 	 **/
@@ -41,7 +41,7 @@ public class VBView extends GenericView
 	{
 		super(e);
 	}
-
+	
 	/**
 	 *	Overridden from PlainView - this method gets called to render every
 	 *	element of unselected text.
@@ -69,7 +69,7 @@ public class VBView extends GenericView
 		}
 		return drawTabbedText(s, x, y, g, p0, false);
 	}
-
+	
 	/**
 	 *	Overridden from PlainView - this method gets called to render every
 	 *	element of selected text, so that I could change how it's displayed if I
@@ -81,17 +81,17 @@ public class VBView extends GenericView
 		String before = getDocument().getText(0, p0);
 		return drawTabbedText(s, x, y, g, p0, true);
 	}
-
+	
 	/**
 	 *	Renders the text segment onto the given Grapnics context.
-	 *
+	 *	
 	 *	Originally, this looked a lot like drawTabbedText from the
 	 *	javax.swing.text.Utilities class with a little bit of tokenizing, but
 	 *	now it's pretty much modified to my own style.  Unfortunately, at some
 	 *	point in time, my indentation got all weird (probably as a result of me
 	 *	using tabs and the original implementation mixing spaces and tabs), so
 	 *	there may be some weird-looking parts left in the code.
-	 *
+	 *	
 	 *	This is the magic of my syntax hilighting for VB.
 	 **/
 	protected int drawTabbedText(String s, int x, int y, Graphics g, int startOffset, boolean selected)
@@ -316,11 +316,11 @@ public class VBView extends GenericView
 		}
 		return x;
 	}
-
+	
 	/**
 	 *	Returns the color to use on the given token.
-	 *
-	 *	This will return the default foreground color, if no special color is
+	 *	
+	 *	This will return the default foreground color, if no special color is 
 	 *	assigned to that token.
 	 **/
 	protected Color getColor(String word)
@@ -330,11 +330,11 @@ public class VBView extends GenericView
 		else
 			return getContainer().getForeground();
 	}
-
+	
 	/**
 	 *	Returns an <code>ArrayList</code> of <code>Interval</code> objects
 	 *	representing code block intervals in the document.
-	 *
+	 *	
 	 *	This version is specifically for finding blocks in the Visual Basic
 	 *	language.
 	 **/
@@ -409,10 +409,10 @@ public class VBView extends GenericView
 		}
 		return ret;
 	}
-
+	
 	/**
 	 *	Helper function to help with <code>getIntervals</code>.
-	 *
+	 *	
 	 *	Puts the intervals into the list in an in-order traversal of blocks
 	 *	between startEnd[0] and startEnd[1].  This is modified from the
 	 *	C-syntax-based one in GenericView to work better with VB's string and
@@ -455,11 +455,11 @@ public class VBView extends GenericView
 			parseIndex++;
 		}
 	}
-
+	
 	/**
 	 *	Searches for a String identifier for a block in the text after the block
 	 *	start token.
-	 *
+	 *	
 	 *	Overridden from GenericView for VB.  This language is like one big
 	 *	special case, relative to the other three allowed by TopCoder.
 	 **/

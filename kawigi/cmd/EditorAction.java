@@ -1,22 +1,18 @@
 package kawigi.cmd;
 import kawigi.editor.*;
-import kawigi.language.EditorLanguage;
 import kawigi.properties.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
 /**
  *	This is the big thing that controls common editor commands that act on a
  *	specific CodePane.
- *	
+ *
  *	Since they act on a code pane, they are local actions, and the context is
  *	the CodePane, and they should belong to a non-global dispatcher.
- *	
+ *
  *	Examples of actions implemented here include copy, paste, undo, and indent.
  **/
 public class EditorAction extends DefaultAction
@@ -34,7 +30,7 @@ public class EditorAction extends DefaultAction
 		super(cmdid);
 		this.context = context;
 	}
-	
+
 	/**
 	 *	Returns true if a button for this action should appear enabled.
 	 **/
@@ -53,7 +49,7 @@ public class EditorAction extends DefaultAction
 				return true;
 		}
 	}
-	
+
 	/**
 	 *	Runs the action of the command.
 	 **/
@@ -157,7 +153,6 @@ public class EditorAction extends DefaultAction
 			{
 				int currentIndex = context.getCaretPosition();
 				String text = context.getText().replaceAll("\\r", "");
-				boolean foundWord = false;
 				int start = currentIndex-1;
 				if (start >= 0 && text.charAt(start) != '\n')
 				{
@@ -182,7 +177,7 @@ public class EditorAction extends DefaultAction
 				}
 				else if (start >= 0)
 					start--;
-				
+
 				context.setText(text.substring(0, start+1) + text.substring(currentIndex));
 				context.setCaretPosition(start+1);
 				break;
@@ -191,7 +186,6 @@ public class EditorAction extends DefaultAction
 			{
 				int currentIndex = context.getCaretPosition();
 				String text = context.getText().replaceAll("\\r", "");
-				boolean foundWord = false;
 				int start = currentIndex;
 				while (start < text.length() && Character.isWhitespace(text.charAt(start)) && text.charAt(start) != '\n')
 					start ++;
@@ -213,7 +207,7 @@ public class EditorAction extends DefaultAction
 				}
 				else if (start < text.length())
 					start++;
-				
+
 				context.setText(text.substring(0, currentIndex) + text.substring(start));
 				context.setCaretPosition(currentIndex);
 				break;
@@ -221,7 +215,7 @@ public class EditorAction extends DefaultAction
 			case actNewLine:
 			{
 				String text = context.getText().replaceAll("\\r", "");
-				String line = "";
+				String line;
 				String indentation = "";
 				int lines = 0;
 				for (int ind = -1; ind < context.getCaretPosition(); ind = text.indexOf('\n', ind+1))
@@ -243,11 +237,6 @@ public class EditorAction extends DefaultAction
 					pt = new Point();
 				JPopupMenu popup = (JPopupMenu)UIHandler.loadMenu(MenuID.EditorContextMenu, context.getDispatcher());
 				popup.show(context, pt.x, pt.y);
-				break;
-			}
-			case actInsertTestCode:
-			{
-				context.replaceSelection(EditorLanguage.sTestingCodeTag);
 				break;
 			}
 		}

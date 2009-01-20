@@ -1,9 +1,8 @@
 package kawigi.cmd;
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.io.File;
+import java.awt.event.*;
 import javax.swing.*;
+import java.io.*;
+import java.awt.*;
 
 /**
  *	ActID enum - The master list of KawigiEdit commands.
@@ -122,13 +121,6 @@ public enum ActID
 	// language and if it exists, replaces the current source code with the
 	// contents of the file.
 	actLoad(null, new Integer(KeyEvent.VK_L), "Load", "Load Code from Disk", "Import?.gif", LocalTestAction.class, true),
-	// Saves the code locally (inserting the testing code and all that jazz),
-	// compiles it, and if the compile succeeds, runs it.
-	actRunTests(null, new Integer(KeyEvent.VK_R), "Run Tests", "Compile and Run All Test Cases Locally", "Play?.gif", LocalTestAction.class, true),
-	// Kills a test or compile process.
-	actKillProcess(null, new Integer(KeyEvent.VK_K), "Kill", "Kill Currently Running Process", "Stop?.gif", LocalTestAction.class, true),
-	// Opens some local file into the "Local Code" tab.
-	actOpenLocal(null, new Integer(KeyEvent.VK_O), "Open", "Open a local source file for reference", "Open?.gif", LocalTestAction.class, true),
 	// General config commands:
 	// Starts the config dialog.
 	actLaunchConfig(null, new Integer(KeyEvent.VK_D), "Config", "Launch Configuration Dialog", "Preferences?.gif", SettingAction.class, true),
@@ -138,16 +130,6 @@ public enum ActID
 	actCancelConfig(null, new Integer(KeyEvent.VK_C), "Cancel", "Cancel config changes", null, SettingAction.class, true),
 	// File selector for the directory things are saved in.
 	actLocalDirField(null, new Integer(KeyEvent.VK_D), "Local Directory:", "Directory on your hard drive where programs and settings are saved", null, TextSettingAction.class, true, "kawigi.localpath", "."),
-	// Turn on automatic synchronization of source code with external file
-	actAutoFileSync(null, new Integer(KeyEvent.VK_A), "Auto synchronization with external file", "Do automatic loading and saving of the source from editor to file", null, BooleanSettingAction.class, true, "kawigi.file.sync", false),
-	// Prefer external file sources over sources given from TopCoder server
-	actPreferFileOpen(null, new Integer(KeyEvent.VK_P), "Always prefer external file to TC source", "When opening the problem always load source from file if it exists", null, BooleanSettingAction.class, true, "kawigi.file.prefer", false),
-	// Timeout before test processes are automatically killed.
-	actTimeout(null, new Integer(KeyEvent.VK_T), "Process Timeout:", "How long to wait before killing local processes (seconds)", null, NumberSettingAction.class, true, "kawigi.timeout", new int[]{10, 1, 100, 1}),
-	// Settings on the compile and test output text boxes.
-	actTestFont(null, null, "Test Font:", "Test Font", null, FontSettingAction.class, true, "kawigi.testing.font", new Font("Monospaced", 0, 12)),
-	actTestBackground(null, new Integer(KeyEvent.VK_B), "Background", "Testing pane background", null, ColorSettingAction.class, true, "kawigi.testing.background", Color.white),
-	actTestForeground(null, new Integer(KeyEvent.VK_F), "Foreground", "Testing pane foreground", null, ColorSettingAction.class, true, "kawigi.testing.foreground", Color.black),
 	// Settings on Problem timer
 	actTimerDelay(null, new Integer(KeyEvent.VK_E), "Problem Timer Delay", "Problem Timer Delay (milliseconds)", null, NumberSettingAction.class, true, "kawigi.timer.delay", new int[]{1000, 50, 60000, 10}),
 	actTimerLEDColor(null, new Integer(KeyEvent.VK_L), "Timer LED Color", "Color of filled LED graphics for problem timer", null, ColorSettingAction.class, true, "kawigi.timer.foreground", Color.green),
@@ -190,22 +172,9 @@ public enum ActID
 	actCodeFont(null, null, "Font:", "Code Font", null, FontSettingAction.class, true, "kawigi.editor.font", new Font("Monospaced", Font.PLAIN, 12)),
 	// Local Testing language settings:
 	actJavaFileName(null, null, "File Name:", "File name for Java files - use $PROBLEM$ to substitute for the problem name", null, TextSettingAction.class, true, "kawigi.language.java.filename", "$PROBLEM$.java"),
-	actJavaCompileCommand(null, null, "Compile Command:", "Compile command for compiling Java files - use $PROBLEM$ to substitute for the problem name", null, TextSettingAction.class, true, "kawigi.language.java.compiler", "javac $PROBLEM$.java"),
-	actJavaRunCommand(null, null, "Run Command:", "Run command for Java programs - use $PROBLEM$ for the problem name and $CWD$ for the current directory", null, TextSettingAction.class, true, "kawigi.language.java.run", "java $PROBLEM$"),
 	actCPPFileName(null, null, "File Name:", "File name for C++ files - use $PROBLEM$ to substitute for the problem name", null, TextSettingAction.class, true, "kawigi.language.cpp.filename", "$PROBLEM$.cpp"),
-	actCPPCompileCommand(null, null, "Compile Command:", "Compile command for compiling C++ files - use $PROBLEM$ to substitute for the problem name", null, TextSettingAction.class, true, "kawigi.language.cpp.compiler", "g++ $PROBLEM$.cpp"),
-	actCPPRunCommand(null, null, "Run Command:", "Run command for C++ programs - use $PROBLEM$ for the problem name and $CWD$ for the current directory", null, TextSettingAction.class, true, "kawigi.language.cpp.run", File.separatorChar == '/' ? "./a.out" : "$CWD$\\a.exe"),
 	actCSharpFileName(null, null, "File Name:", "File name for C# files - use $PROBLEM$ to substitute for the problem name", null, TextSettingAction.class, true, "kawigi.language.csharp.filename", "$PROBLEM$.cs"),
-	actCSharpCompileCommand(null, null, "Compile Command:", "Compile command for compiling C# files - use $PROBLEM$ to substitute for the problem name", null, TextSettingAction.class, true, "kawigi.language.csharp.compiler", File.separatorChar == '/' ? "mcs $PROBLEM$.cs" : "csc $PROBLEM$.cs"),
-	actCSharpRunCommand(null, null, "Run Command:", "Run command for C# programs - use $PROBLEM$ for the problem name and $CWD$ for the current directory", null, TextSettingAction.class, true, "kawigi.language.csharp.run", File.separatorChar == '/' ? "mono $PROBLEM$.exe" : "$CWD$\\$PROBLEM$.exe"),
 	actVBFileName(null, null, "File Name:", "File name for VB files - use $PROBLEM$ to substitute for the problem name", null, TextSettingAction.class, true, "kawigi.language.vb.filename", "$PROBLEM$.vb"),
-	actVBCompileCommand(null, null, "Compile Command:", "Compile command for compiling VB files - use $PROBLEM$ to substitute for the problem name", null, TextSettingAction.class, true, "kawigi.language.vb.compiler", "vbc $PROBLEM$.vb"),
-	actVBRunCommand(null, null, "Run Command:", "Run command for VB programs - use $PROBLEM$ for the problem name and $CWD$ for the current directory", null, TextSettingAction.class, true, "kawigi.language.vb.run", File.separatorChar == '/' ? "mono $PROBLEM$.exe" : "$CWD$\\$PROBLEM$.exe"),
-	// Special C++ long long substitution parameters
-	actCPPLLType(null, null, "'long long' type:", "Name of type that have to be substituted instead of 'long long'.", null, TextSettingAction.class, true, "kawigi.language.cpp.lltype", "long long"),
-	actCPPLLConst(null, null, "'long long' constant:", "The way in which 'long long' constants will be surrounded.", null, TextSettingAction.class, true),
-	actCPPLLPrefix(null, null, "        prefix:", "Prefix that should be put before 'long long' constants.", null, TextSettingAction.class, true, "kawigi.language.cpp.llprefix", ""),
-	actCPPLLPostfix(null, null, "        postfix:", "Postfix that should be put after 'long long' constants.", null, TextSettingAction.class, true, "kawigi.language.cpp.llpostfix", "ll"),
 	// Template Editor commands:
 	actOpenTemplate(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_O), "Open", "Open Template", "Open?.gif", TemplateAction.class, true),
 	actSaveTemplate(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_S), "Save", "Save Template", "Save?.gif", TemplateAction.class, true),
@@ -235,30 +204,6 @@ public enum ActID
 	actInsertSnippet(null, new Integer(KeyEvent.VK_I), "Insert Snippet", "Repeats inserting the most recently inserted snippet.", null, SnippetAction.class, false),
 	// Brings up the context menu when you hit ctrl+I
 	actCtxMenu(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_I), "Context Menu", "Brings up the context menu", null, EditorAction.class, false),
-	// Inserts the <%:testing-code%> tag.
-	actInsertTestCode(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_E), "Test Code Tag", "Inserts the KawigiEdit tag for testing code", null, EditorAction.class, false),
-	// Brings up a dialog for editing test cases.
-	actTestCases(null, null, "Test Cases", "Calling the test cases editor for 'Run Tests'", null, TestCasesAction.class, true),
-	// Edit the single test case.
-	actEditTestCase(null, null, "Edit", "Change this test case", null, TestCasesAction.class, true),
-	// Delete some test case.
-	actDeleteTestCase(null, null, "Delete", "Delete this test case", null, TestCasesAction.class, true),
-	// Add new test case.
-	actAddTestCase(null, null, "Add", "Add new test case", null, TestCasesAction.class, true),
-	// Add all test cases from examples.
-	actAddExTestCases(null, null, "Add from examples", "Add all test cases from examples", null, TestCasesAction.class, true),
-	// Calling a dialog for editing array params of the test case.
-	actEditArrayParam(null, null, "modify", "Change this array parameter", null, TestCasesAction.class, false),
-	// Some action that realy is not an action. It needed for showing text in textboxes and saving changes in it
-	actTestCaseParamsTexts(null, null, null, null, null, TestCasesAction.class, false),
-	// Saving changed test case parameters.
-	actSaveCaseParams(null, null, "OK", null, null, TestCasesAction.class, true),
-	// Cancel editing test case parameters.
-	actCancelCaseParams(null, null, "Cancel", null, null, TestCasesAction.class, true),
-	// Saving array filling of test case parameter.
-	actSaveArrayParam(null, null, "OK", null, null, TestCasesAction.class, true),
-	// Cancel editing of array parameter.
-	actCancelArrayParam(null, null, "Cancel", null, null, TestCasesAction.class, true),
 	// Adding this to the end so it's easier to cut and paste actions and modify
 	// them at the end.  Call me lazy.
 	actEnd(null, null, null, null, null, null, true);
@@ -283,7 +228,7 @@ public enum ActID
 		this.label = label;
 		this.tooltip = tooltip;
 		if (iconFile != null)
-			this.iconFile = "rc/" + iconFile;
+			this.iconFile = "rc" + File.separator + iconFile;
 		this.actionClass = actionClass;
 		this.global = global;
 	}

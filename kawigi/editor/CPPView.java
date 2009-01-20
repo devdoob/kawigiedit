@@ -14,16 +14,16 @@ public class CPPView extends GenericView
 	 *	A map from token to its color.
 	 **/
 	protected static Hashtable<String,Color> colorHash;
-
+	
 	static
 	{
 		initColors();
 	}
-
+	
 	/**
 	 *	Initializes the keywords/tokens and their colors.
-	 *
-	 *	What this basically does is calls GenericView.getColors and
+	 *	
+	 *	What this basically does is calls GenericView.getColors and 
 	 *	GenericView.readKeywords.  It is called when the class is loaded and
 	 *	any time when the color settings might have changed.
 	 **/
@@ -31,9 +31,9 @@ public class CPPView extends GenericView
 	{
 		colorHash = new Hashtable<String,Color>();
 		getColors();
-		readKeywords("cpp", true, colorHash);
+		readKeywords("CPP", true, colorHash);
 	}
-
+	
 	/**
 	 *	Creates a new C++ View to render this Element.
 	 **/
@@ -41,7 +41,7 @@ public class CPPView extends GenericView
 	{
 		super(e);
 	}
-
+	
 	/**
 	 *	Overridden from PlainView - this method gets called to render every
 	 *	element of unselected text.
@@ -69,7 +69,7 @@ public class CPPView extends GenericView
 		}
 		return drawTabbedText(s, x, y, g, p0, false, inComment);
 	}
-
+	
 	/**
 	 *	Overridden from PlainView - this method gets called to render every
 	 *	element of selected text, so that I could change how it's displayed if I
@@ -98,20 +98,20 @@ public class CPPView extends GenericView
 		}
 		return drawTabbedText(s, x, y, g, p0, true, inComment);
 	}
-
+	
 	/**
 	 *	Renders the text segment onto the given Grapnics context.
-	 *
+	 *	
 	 *	Originally, this looked a lot like drawTabbedText in the
 	 *	javax.swing.text.Utilities class with a little bit of tokenizing, but
 	 *	now it's pretty much modified to my own style.  Unfortunately, at some
 	 *	point in time, my indentation got all weird (probably as a result of me
 	 *	using tabs and the original implementation mixing spaces and tabs), so
 	 *	there may be some weird-looking parts left in the code.
-	 *
+	 *	
 	 *	It's possible that I'll eventually change this to work differently with
 	 *	compiler directives.
-	 *
+	 *	
 	 *	This is the magic of my syntax hilighting in C++.
 	 **/
 	protected int drawTabbedText(String s, int x, int y, Graphics g, int startOffset, boolean selected, boolean inComment)
@@ -412,11 +412,11 @@ public class CPPView extends GenericView
 		}
 		return x;
 	}
-
+	
 	/**
 	 *	Returns the color to use on the given token.
-	 *
-	 *	This will return the default foreground color, if no special color is
+	 *	
+	 *	This will return the default foreground color, if no special color is 
 	 *	assigned to that token.
 	 **/
 	protected Color getColor(String word)
@@ -426,7 +426,7 @@ public class CPPView extends GenericView
 		else
 			return getContainer().getForeground();
 	}
-
+	
 	/**
 	 *	Extension of the generic getIntervals() method that includes compiler
 	 *	directive matches.

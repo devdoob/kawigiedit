@@ -1,14 +1,11 @@
 package kawigi.cmd;
 import kawigi.properties.*;
-import kawigi.editor.*;
-import kawigi.widget.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 
 /**
  *	Setting action implementation for font settings.
- *	
+ *
  *	This action is meant to be set on a kawigi.widget.FontPanel.
  **/
 public class FontSettingAction extends SettingAction
@@ -20,16 +17,16 @@ public class FontSettingAction extends SettingAction
 	{
 		super(cmdid);
 	}
-	
+
 	/**
 	 *	Does nothing :-)
-	 *	
+	 *
 	 *	FontPanels shouldn't fire actions.
 	 **/
 	public void actionPerformed(ActionEvent e)
 	{
 	}
-	
+
 	/**
 	 *	Overriden to get the right value for the FONT property.
 	 **/
@@ -45,7 +42,7 @@ public class FontSettingAction extends SettingAction
 		}
 		return super.getValue(key);
 	}
-	
+
 	/**
 	 *	Overridden to properly set the FONT property.
 	 **/
@@ -60,17 +57,9 @@ public class FontSettingAction extends SettingAction
 				// Do notifications:
 				switch (cmdid)
 				{
-					case actTestFont:
-						if (Dispatcher.getCompileComponent() != null)
-							Dispatcher.getCompileComponent().updatePrefs();
-						if (Dispatcher.getOutputComponent() != null)
-							Dispatcher.getOutputComponent().updatePrefs();
-						break;
 					case actCodeFont:
 						if (Dispatcher.getCodePane() != null)
 							Dispatcher.getCodePane().resetPrefs();
-						if (Dispatcher.getLocalCodePane() != null)
-							Dispatcher.getLocalCodePane().resetPrefs();
 						break;
 				}
 			}

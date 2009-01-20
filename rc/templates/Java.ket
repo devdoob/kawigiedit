@@ -2,7 +2,7 @@ import java.util.*;
 import java.util.regex.*;
 import java.text.*;
 import java.math.*;
-
+import java.awt.geom.*;
 
 public class <%:class-name%>
 {
@@ -10,6 +10,5 @@ public class <%:class-name%>
 	{
 		<%:set-caret%>
 	}
-	
-<%:testing-code%>
 }
+//Powered by [KawigiEditNonTest] modified by pivanof!

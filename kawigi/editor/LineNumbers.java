@@ -4,7 +4,6 @@ import javax.swing.event.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.util.*;
 import java.beans.*;
 
@@ -16,8 +15,7 @@ import java.beans.*;
  *	By clicking or clicking and dragging on numbers, you can select lines of text
  *	in the text pane.
  **/
-public class LineNumbers extends JComponent implements DocumentListener, MouseListener, MouseMotionListener,
-													   PropertyChangeListener, CaretListener, HierarchyListener
+public class LineNumbers extends JComponent implements DocumentListener, MouseListener, MouseMotionListener, PropertyChangeListener, CaretListener
 {
 	/**
 	 *	Text pane that we are numbering.
@@ -51,10 +49,6 @@ public class LineNumbers extends JComponent implements DocumentListener, MouseLi
 	 *	View that renders text on the text pane.
 	 **/
 	private GenericView view;
-	/**
-	 * Graphics which will be used for setting correct size of the component  
-	 */
-	private Graphics graphics;
 	
 	/**
 	 *	Creates an instance of <code>LineNumbers</code> to go next to
@@ -75,15 +69,11 @@ public class LineNumbers extends JComponent implements DocumentListener, MouseLi
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		textarea.addMouseListener(this);
-		textarea.addHierarchyListener(this);
 		view = (GenericView)textarea.getEditorKit().getViewFactory().create(textarea.getDocument().getDefaultRootElement());
 		setPreferredSize(new Dimension(24, 17));	//<---- this is the right starting size if they use the default font and size
 		textarea.addPropertyChangeListener(this);
 		textarea.addCaretListener(this);
 		setFocusable(false);
-
-		BufferedImage im = new BufferedImage(24, 17, BufferedImage.TYPE_INT_RGB);
-		graphics = im.createGraphics();
 	}
 	
 	/**
@@ -136,52 +126,6 @@ public class LineNumbers extends JComponent implements DocumentListener, MouseLi
 		{
 		}
 	}
-
-	/**
-	 * Fix lineWidth variable with info from FontMetrics if called for the first time
-	 * 
-	 * @param fm	metrics to get info from
-	 */
-	private void fixLineWidth(FontMetrics fm)
-	{
-		if (lineWidth == 0) {
-			lineWidth = fm.getHeight();
-			offset = -fm.getDescent()/2;
-		}
-	}
-
-	/**
-	 * Get size of space reserved for line numbers in component;
-	 *  
-	 * @param fm	font metrics to get info from
-	 * @return		width of text to reserve
-	 */
-	private int getTextWidth(FontMetrics fm)
-	{
-		return Math.max(textwidth, fm.stringWidth("000"));
-	}
-
-	/**
-	 * Check (and fix if needed) that minimum and preferred sizes are sufficient
-	 * to accommodate all line numbers
-	 *  
-	 * @param fm	Font metrics used for getting information about font sizes
-	 */
-	private void fixPrefferedSize(FontMetrics fm)
-	{
-		int need_width = getTextWidth(fm) + 8;
-		int need_height = lineWidth * currentLines + 8;
-		Dimension dim = getPreferredSize();
-		if (dim.width != need_width || dim.height != need_height) {
-			dim = new Dimension(need_width, need_height);
-			setPreferredSize(dim);
-			setMinimumSize(dim);
-
-			repaint();
-			//getParent().invalidate();
-			//paintImmediately(0, 0, dim.width, dim.height);
-		}
-	}
 	
 	/**
 	 *	Called by the DocumentListener methods to check if the number of lines
@@ -200,12 +144,7 @@ public class LineNumbers extends JComponent implements DocumentListener, MouseLi
 		if (lines != currentLines)
 		{
 			currentLines = lines;
-			
-			graphics.setFont(textarea.getFont().deriveFont(Font.BOLD));
-			FontMetrics fm = graphics.getFontMetrics();
-			fixLineWidth(fm);
-
-			fixPrefferedSize(fm);
+			repaint();
 		}
 	}
 	
@@ -216,14 +155,18 @@ public class LineNumbers extends JComponent implements DocumentListener, MouseLi
 	{
 		g.setFont(textarea.getFont().deriveFont(Font.BOLD));
 		FontMetrics fm = g.getFontMetrics();
-		fixLineWidth(fm);
+		if (lineWidth == 0)
+		{
+			lineWidth = fm.getHeight();
+			offset = -fm.getDescent()/2;
+		}
 		g.setColor(getBackground());
 		g.fillRect(0, 0, getWidth(), getHeight());
 		g.setColor(textarea.getSelectionColor());
 		int start = Math.max(1, Math.min(anchor, lastIndex));
 		int end = Math.min(currentLines, Math.max(anchor, lastIndex));
 		g.fillRect(0, (start-1)*lineWidth-offset, textwidth, (end-start+1)*lineWidth);
-		int maxwidth = getTextWidth(fm);
+		int maxwidth = Math.max(textwidth, fm.stringWidth("000"));
 		for (int i=1; i<= currentLines; i++)
 		{
 			String str = Integer.toString(i);
@@ -236,12 +179,12 @@ public class LineNumbers extends JComponent implements DocumentListener, MouseLi
 		}
 		textwidth = maxwidth;
 		g.setColor(getForeground());
-		ArrayList<Interval> intervals = view.getIntervals();
+		ArrayList intervals = view.getIntervals();
 		Interval use = null;
 		int caret = textarea.getCaretPosition();
 		for (int i=0; i<intervals.size(); i++)
 		{
-			Interval in = intervals.get(i);
+			Interval in = (Interval)intervals.get(i);
 			if (in.isBlock() && caret >= in.getStartIndex() && caret <= in.getEndIndex() && (use == null || in.getEndLine() - in.getStartLine() < use.getEndLine() - use.getStartLine()))
 				use = in;
 		}
@@ -256,6 +199,13 @@ public class LineNumbers extends JComponent implements DocumentListener, MouseLi
 		}
 		g.drawLine(maxwidth+2, 0, maxwidth+2, getHeight());
 		g.drawLine(maxwidth+1, 0, maxwidth+1, getHeight());
+		Dimension dim = getPreferredSize();
+		if (dim.height != lineWidth*currentLines || dim.width != maxwidth+8)
+		{
+			setPreferredSize(new Dimension(maxwidth+8, lineWidth*currentLines));
+			setMinimumSize(new Dimension(maxwidth+8, lineWidth*currentLines));
+			repaint();
+		}
 	}
 	
 	/**
@@ -399,16 +349,5 @@ public class LineNumbers extends JComponent implements DocumentListener, MouseLi
 	public void caretUpdate(CaretEvent e)
 	{
 		repaint();
-	}
-
-	public void hierarchyChanged(HierarchyEvent e) {
-		if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && isShowing()) {
-			// Some bug in Java causes to not repaint this component after resizing
-			// Symptoms: open problem (or generate code in standalone) and without doing
-			// anything else change tab to "Test code" - line numbers will not be shown
-			// until you click in editor or press any movement key while cursor is in editor
-			Dimension dim = getPreferredSize();
-			paintImmediately(0, 0, dim.width, dim.height);
-		}
 	}
 }
