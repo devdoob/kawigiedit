@@ -41,7 +41,7 @@
                  verbose="${verbose}" />
     </target>
 
-    <target name="package" depends="build">
+    <target name="package" depends="build, javadoc">
         <mkdir dir="${packagedir}"/>
         <copy todir="${packagedir}">
             <fileset dir="${classesdir}">
