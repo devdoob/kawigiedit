@@ -8,6 +8,7 @@ import java.awt.event.*;
  *	
  *	This action is meant to be set on a kawigi.widget.FontPanel.
  **/
+@SuppressWarnings("serial")
 public class FontSettingAction extends SettingAction
 {
 	/**

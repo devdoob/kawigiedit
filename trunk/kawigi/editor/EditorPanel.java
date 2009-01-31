@@ -8,6 +8,7 @@ import javax.swing.*;
  *	It helps me not worry about doing this for every CodePane, and it also makes
  *	it easier to specify in the .ui XML.
  **/
+@SuppressWarnings("serial")
 public class EditorPanel extends JPanel
 {
 	/**

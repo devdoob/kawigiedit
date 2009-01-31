@@ -8,6 +8,7 @@ import java.awt.event.*;
 /**
  *	Setting action implementation for color settings.
  **/
+@SuppressWarnings("serial")
 public class ColorSettingAction extends SettingAction
 {
 	/**

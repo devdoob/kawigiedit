@@ -8,6 +8,7 @@ import javax.swing.text.*;
  *	
  *	And it sounds better than "HackableEditorKit".
  **/
+@SuppressWarnings("serial")
 public class ConfigurableEditorKit extends StyledEditorKit
 {
 	/**

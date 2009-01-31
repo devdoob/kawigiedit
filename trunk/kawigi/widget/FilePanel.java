@@ -7,6 +7,7 @@ import java.awt.event.*;
 /**
  *	A simple panel that has fields to enter a font face and size.
  **/
+@SuppressWarnings("serial")
 public class FilePanel extends JPanel implements ActionListener, FocusListener
 {
 	/**

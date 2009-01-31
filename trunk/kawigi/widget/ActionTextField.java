@@ -12,6 +12,7 @@ import kawigi.util.StringsUtil;
 /**
  *	Just a JTextField that can be configured and updated by an Action.
  **/
+@SuppressWarnings("serial")
 public class ActionTextField extends JTextField implements PropertyChangeListener, DocumentListener
 {
 	/**

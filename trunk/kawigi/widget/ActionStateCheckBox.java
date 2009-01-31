@@ -30,6 +30,7 @@ import java.beans.*;
  *	from the action.
  *	[/rant]
  **/
+@SuppressWarnings("serial")
 public class ActionStateCheckBox extends JCheckBox implements PropertyChangeListener
 {
 	/**

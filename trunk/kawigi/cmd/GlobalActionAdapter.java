@@ -8,6 +8,7 @@ import java.awt.event.*;
  *	they act on a code pane, for instance).  This will use the Dispatcher to
  *	try and guess which local context they should act on.
  **/
+@SuppressWarnings("serial")
 public class GlobalActionAdapter extends DefaultAction
 {
 	/**

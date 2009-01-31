@@ -9,6 +9,7 @@ import javax.swing.*;
  *	Setting action implementation for number options that are set using a
  *	spinner.
  **/
+@SuppressWarnings("serial")
 public class NumberSettingAction extends SettingAction
 {
 	/**

@@ -7,6 +7,7 @@ import java.awt.event.*;
  *	This is a component that renders a grid of colors for the user to choose
  *	from.
  **/
+@SuppressWarnings("serial")
 public class ColorSwatch extends JMenuItem implements MouseListener
 {
 	/**

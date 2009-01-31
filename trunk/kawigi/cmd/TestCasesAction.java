@@ -18,6 +18,7 @@ import kawigi.widget.*;
 /**
  * Implementation of all actions for test cases editing.
  **/
+@SuppressWarnings("serial")
 public final class TestCasesAction extends DefaultAction
 {
 	/**

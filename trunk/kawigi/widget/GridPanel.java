@@ -2,6 +2,7 @@ package kawigi.widget;
 import javax.swing.*;
 import java.awt.*;
 
+@SuppressWarnings("serial")
 public class GridPanel extends JPanel
 {
 	public GridPanel()

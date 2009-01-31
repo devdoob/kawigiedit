@@ -7,6 +7,7 @@ import java.awt.*;
  *	
  *	The fonts should be in a reasonable size.
  **/
+@SuppressWarnings("serial")
 public class FontCellRenderer extends JLabel implements ListCellRenderer
 {
 	/**

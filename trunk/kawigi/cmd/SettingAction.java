@@ -24,6 +24,7 @@ import java.awt.event.*;
  *	be effective immediately on being used, but settings done on the dialog are
  *	cancellable.
  **/
+@SuppressWarnings("serial")
 public class SettingAction extends DefaultAction
 {
 	/**

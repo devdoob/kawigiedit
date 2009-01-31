@@ -8,6 +8,7 @@ import javax.swing.*;
  *	The default display component for compile and program output in processes
  *	started by KawigiEdit.
  **/
+@SuppressWarnings("serial")
 public class SimpleOutputComponent extends JPanel implements ConsoleDisplay
 {
 	/**

@@ -21,6 +21,7 @@ import static kawigi.util.StringsUtil.*;
  *	some effort into it and make it work in more (or all) cases, be my guest,
  *	and let me know if you want your contributions to go to the final product.
  **/
+@SuppressWarnings("serial")
 public final class ProblemParser extends JDialog implements ActionListener, ClassDeclGenerator
 {
 	/**

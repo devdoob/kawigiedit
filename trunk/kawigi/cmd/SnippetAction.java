@@ -10,6 +10,7 @@ import javax.swing.*;
  *	This class executes all snippet-related commands, including using a snippet,
  *	launching the snippet dialog and all the controls on the snippet dialog.
  **/
+@SuppressWarnings("serial")
 public class SnippetAction extends DefaultAction
 {
 	/**
