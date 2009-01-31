@@ -9,58 +9,78 @@ package kawigi.language;
 public enum EditorDataType
 {
 	/**
-	 *	String type.
+	 * String type.
 	 **/
-	String(null),
+	String(null, 18),
 	/**
-	 *	int type.
+	 * int type.
 	 **/
-	Integer(null),
+	Integer(null, 1),
 	/**
-	 *	double type.
+	 * double type.
 	 **/
-	Double(null),
+	Double(null, 15),
 	/**
-	 *	long (or long long) type.
+	 * long (or long long) type.
 	 **/
-	Long(null),
+	Long(null, 14),
 	/**
-	 *	boolean type.
+	 * boolean type.
 	 **/
-	Boolean(null),
+	Boolean(null, 0),
 	/**
-	 *	String[] or vector<string> type.
+	 * String[] or vector<string> type.
 	 **/
-	StringArray(String),
+	StringArray(String, 22),
 	/**
-	 *	int[] or vector<int> type.
+	 * int[] or vector<int> type.
 	 **/
-	IntegerArray(Integer),
+	IntegerArray(Integer, 20),
 	/**
-	 *	double[] or vector<double> type.
+	 * double[] or vector<double> type.
 	 **/
-	DoubleArray(Double),
+	DoubleArray(Double, 21),
 	/**
-	 *	long[] or vector<long long> type.
+	 * long[] or vector<long long> type.
 	 **/
-	LongArray(Long);
+	LongArray(Long, 24);
 
 	/**
-	 *	If this type is an array type, this is the type of its elements.  If it
-	 *	isn't an array type, this is null.
+	 * If this type is an array type, this is the type of its elements.  If it
+	 * isn't an array type, this is null.
 	 **/
 	private final EditorDataType primitiveType;
+	/**
+	 * Id of this type in TopCoder Arena.
+	 */
+	private final int topcoderID;
 
 	/**
-	 *	Constructs enum values.
+	 * Transform TopCoder ID of the type into our enum object.
+	 * 
+	 * @param tcId	TopCoder id
+	 * @return		enum object of the type
+	 */
+	public static EditorDataType getTypeByTopCoderID(int tcId)
+	{
+		for (EditorDataType type : EditorDataType.values()) {
+			if (type.getID() == tcId)
+				return type;
+		}
+		return null;
+	}
+	
+	/**
+	 * Constructs enum values.
 	 **/
-	private EditorDataType(EditorDataType primType)
+	private EditorDataType(EditorDataType primType, int tcID)
 	{
 		primitiveType = primType;
+		topcoderID = tcID;
 	}
 
 	/**
-	 *	Returns the type of elements of this type if this is an array type.
+	 * Returns the type of elements of this type if this is an array type.
 	 **/
 	public EditorDataType getPrimitiveType()
 	{
@@ -68,7 +88,15 @@ public enum EditorDataType
 	}
 
 	/**
-	 *	Returns true if this type represents an array type.
+	 * Returns TopCoder ID of the type.
+	 */
+	public int getID()
+	{
+		return topcoderID;
+	}
+	
+	/**
+	 * Returns true if this type represents an array type.
 	 **/
 	public boolean isArrayType()
 	{
@@ -76,7 +104,7 @@ public enum EditorDataType
 	}
 
 	/**
-	 *	Returns true if this type represents an array type of type primType.
+	 * Returns true if this type represents an array type of type primType.
 	 **/
 	public boolean isArrayType(EditorDataType type)
 	{
@@ -84,14 +112,17 @@ public enum EditorDataType
 	}
 
 	/**
-	 *	Returns true if type is the same as this type, or if either this type or
-	 *	the given type represents an array/vector of the other.
+	 * Returns true if type is the same as this type, or if either this type or
+	 * the given type represents an array/vector of the other.
 	 **/
 	public boolean isType(EditorDataType type)
 	{
 		return this == type || type.isArrayType(this) || isArrayType(type);
 	}
 
+	/**
+	 * Check if this type is string or array of strings 
+	 */
 	public boolean isString() {
 		return isType(String);
 	}

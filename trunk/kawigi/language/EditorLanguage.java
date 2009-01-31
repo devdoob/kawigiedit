@@ -496,9 +496,12 @@ public abstract class EditorLanguage
     {
 	    String[] propTypes;
 	    // All we do is fill our static table of types used for parsing
-	    // of problem statement. It's a kind of crack here 'cause with appearance
+	    // of problem statement. It's a kind of hack here 'cause with appearance
 	    // of new language we must to add it here. I didn't find more beautiful
 	    // solving of this task.
+	    // This static table of type names I believe is used now only for parsing
+	    // in standalone mode. In arena mode EditorDataType::getTypeByTopCoderID()
+	    // should suffice.
 	    propTypes = JavaLang.getAllTypeNames();
 	    fillTypes(propTypes);
 	    propTypes = CPPLang.getAllTypeNames();
