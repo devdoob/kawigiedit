@@ -56,6 +56,20 @@ public final class TCProblemConverter implements ClassDeclGenerator
 	}
 
 	/**
+	 * Convert TopCoder data type into our enum object representing data type.
+	 * 
+	 * @param tcType	TopCoder type object
+	 * @return			KawigiEdit type enum
+	 */
+	private static EditorDataType getType(DataType tcType)
+	{
+		EditorDataType resType = EditorDataType.getTypeByTopCoderID(tcType.getID());
+		if (resType == null)
+			resType = EditorLanguage.getType(tcType.getDescriptor(tclang));
+		return resType;
+	}
+	
+	/**
 	 * Converting saved component and tclang into ClassDecl.
 	 **/
 	private static ClassDecl parseClassDecl()
@@ -63,13 +77,13 @@ public final class TCProblemConverter implements ClassDeclGenerator
 		EditorLanguage lang = ProblemContext.getLanguage();
 
 		// Converting TopCoder return type
-		EditorDataType returnType = EditorLanguage.getType(component.getReturnType().getDescriptor(tclang));
+		EditorDataType returnType = getType(component.getReturnType());
 
 		// Converting TopCoder parameter types
 		DataType[] tcParamTypes = component.getParamTypes();
 		EditorDataType[] paramTypes = new EditorDataType[tcParamTypes.length];
 		for (int i=0; i<tcParamTypes.length; i++)
-			paramTypes[i] = EditorLanguage.getType(tcParamTypes[i].getDescriptor(tclang));
+			paramTypes[i] = getType(tcParamTypes[i]);
 
 		// Here we already can create final class declaration
 		ClassDecl retval = new ClassDecl(component.getClassName(),

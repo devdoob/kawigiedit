@@ -70,7 +70,7 @@ public final class CPPLang extends EditorLanguage
 	 */
 	static String[] getAllTypeNames()
 	{
-		return new String[] {"string", "int", "double", "long long", "bool", "vector <string>", "vector <int>", "vector <double>", "vector <long long>"};
+		return new String[] {"string", "int", "double", "long long", "bool", "vector <string>", "vector <int>", "vector <double>", "vector<long long>"};
 	}
 
 	/**
