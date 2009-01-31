@@ -1,4 +1,4 @@
-<JPanel>
+<HorizontalPanel>
 	<VerticalPanel>
 		<JTabbedPane>
 			<JPanel Name="General/Testing">
@@ -144,4 +144,4 @@
 			<JButton Action="actCancelConfig"/>
 		</JPanel>
 	</VerticalPanel>
-</JPanel>
+</HorizontalPanel>
