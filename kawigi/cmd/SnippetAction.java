@@ -2,11 +2,9 @@ package kawigi.cmd;
 import kawigi.editor.*;
 import kawigi.properties.*;
 import kawigi.widget.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
-import javax.swing.text.*;
 
 /**
  *	This class executes all snippet-related commands, including using a snippet,

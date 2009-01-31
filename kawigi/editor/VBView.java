@@ -1,5 +1,4 @@
 package kawigi.editor;
-import kawigi.properties.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.util.*;
@@ -78,7 +77,7 @@ public class VBView extends GenericView
 	protected int drawSelectedText(Graphics g, int x, int y, int p0, int p1) throws BadLocationException
 	{
 		String s = getDocument().getText(p0, p1 - p0);
-		String before = getDocument().getText(0, p0);
+		getDocument().getText(0, p0);
 		return drawTabbedText(s, x, y, g, p0, true);
 	}
 

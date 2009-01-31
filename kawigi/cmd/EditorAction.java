@@ -4,10 +4,7 @@ import kawigi.language.EditorLanguage;
 import kawigi.properties.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
 /**
@@ -157,7 +154,6 @@ public class EditorAction extends DefaultAction
 			{
 				int currentIndex = context.getCaretPosition();
 				String text = context.getText().replaceAll("\\r", "");
-				boolean foundWord = false;
 				int start = currentIndex-1;
 				if (start >= 0 && text.charAt(start) != '\n')
 				{
@@ -191,7 +187,6 @@ public class EditorAction extends DefaultAction
 			{
 				int currentIndex = context.getCaretPosition();
 				String text = context.getText().replaceAll("\\r", "");
-				boolean foundWord = false;
 				int start = currentIndex;
 				while (start < text.length() && Character.isWhitespace(text.charAt(start)) && text.charAt(start) != '\n')
 					start ++;

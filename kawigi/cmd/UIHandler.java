@@ -154,14 +154,14 @@ public class UIHandler extends DefaultHandler
 		String classname = qName;
 		try
 		{
-			Class controlClass = getClass(classname);
+			Class<? extends Container> controlClass = (Class<? extends Container>)getClass(classname);
 			Container control = null;
 			if (action != null)
 			{
 				try
 				{
-					Constructor c = controlClass.getConstructor(javax.swing.Action.class);
-					control = (Container)c.newInstance(action);
+					Constructor<? extends Container> c = controlClass.getConstructor(javax.swing.Action.class);
+					control = c.newInstance(action);
 				}
 				catch (InvocationTargetException ex)
 				{
@@ -169,7 +169,7 @@ public class UIHandler extends DefaultHandler
 				}
 				catch (Exception ex)
 				{
-					Constructor[] cs = controlClass.getConstructors();
+					Constructor<?>[] cs = controlClass.getConstructors();
 					for (int i=0; i<cs.length; i++)
 						try
 						{
@@ -206,7 +206,7 @@ public class UIHandler extends DefaultHandler
 			{
 				try
 				{
-					control = (Container)controlClass.newInstance();
+					control = controlClass.newInstance();
 				}
 				catch (Throwable t)
 				{
@@ -366,7 +366,7 @@ public class UIHandler extends DefaultHandler
 	 *	class similarly from the kawigi.widget package and the kawigi.editor
 	 *	package.
 	 **/
-	private static Class getClass(String className) throws ClassNotFoundException
+	private static Class<?> getClass(String className) throws ClassNotFoundException
 	{
 		ClassNotFoundException e = null;
 		try

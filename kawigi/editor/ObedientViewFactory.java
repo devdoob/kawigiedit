@@ -11,7 +11,7 @@ public class ObedientViewFactory implements ViewFactory
 	/**
 	 *	Class from which Views are made in this ViewFactory.
 	 **/
-	protected Class viewClass;
+	protected Class<? extends View> viewClass;
 	
 	/**
 	 *	Creates an ObedientViewFactory with no default View implementation.
@@ -25,7 +25,7 @@ public class ObedientViewFactory implements ViewFactory
 	 *	
 	 *	v should be compatible with javax.swing.text.View.
 	 **/
-	public ObedientViewFactory(Class v)
+	public ObedientViewFactory(Class<? extends View> v)
 	{
 		viewClass = v;
 	}
@@ -35,7 +35,7 @@ public class ObedientViewFactory implements ViewFactory
 	 *	
 	 *	v should be compatible with javax.swing.text.View.
 	 **/
-	public void setViewClass(Class v)
+	public void setViewClass(Class<? extends View> v)
 	{
 		viewClass = v;
 	}
@@ -51,7 +51,7 @@ public class ObedientViewFactory implements ViewFactory
 	{
 		try
 		{
-			return (View)viewClass.getDeclaredConstructor(new Class[]{Element.class}).newInstance(new Object[]{elem});
+			return viewClass.getDeclaredConstructor(new Class[]{Element.class}).newInstance(new Object[]{elem});
 		}
 		catch (Exception ex)
 		{

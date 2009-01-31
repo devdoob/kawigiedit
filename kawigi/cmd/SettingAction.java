@@ -4,7 +4,6 @@ import kawigi.widget.*;
 import kawigi.editor.*;
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.*;
 
 /**
  *	Action implementation for setting actions.

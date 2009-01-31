@@ -8,6 +8,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.EditorKit;
 import javax.swing.text.Keymap;
+import javax.swing.text.View;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
@@ -97,7 +98,7 @@ public class CodePane extends JTextPane implements MouseListener, DocumentListen
 	 *	appropriate view class and sets it to use that editor kit for the mime
 	 *	type associated with that lanugage (i.e. - text/<language name>).
 	 **/
-	private void doContentType(String languageName, Class viewClass)
+	private void doContentType(String languageName, Class<? extends View> viewClass)
 	{
 		setEditorKitForContentType("text/" + languageName, new ConfigurableEditorKit(viewClass));
 	}

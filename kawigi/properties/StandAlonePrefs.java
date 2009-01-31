@@ -1,5 +1,4 @@
 package kawigi.properties;
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 

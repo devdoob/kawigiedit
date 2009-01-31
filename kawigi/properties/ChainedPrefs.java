@@ -1,6 +1,4 @@
 package kawigi.properties;
-import java.awt.*;
-import java.io.*;
 import java.util.*;
 
 /**
@@ -61,7 +59,7 @@ public class ChainedPrefs extends AbstractPrefs
 	 **/
 	public void commit()
 	{
-		Enumeration en = props.propertyNames();
+		Enumeration<?> en = props.propertyNames();
 		while (en.hasMoreElements())
 		{
 			String key = en.nextElement().toString();

@@ -1,5 +1,4 @@
 package kawigi.editor;
-import kawigi.properties.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.util.*;
