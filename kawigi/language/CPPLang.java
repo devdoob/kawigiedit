@@ -141,6 +141,19 @@ public final class CPPLang extends EditorLanguage
 		Code related to test code generation.
 	 */
 	/**
+	 * Specific function for inserting some stuff before code generation
+	 * starts. Adds headers and "using namespace" statement to be able to compile
+	 * even if user template doesn't include this stuff.
+	 */
+	protected void preamble()
+	{
+		text("#include <iostream>").endLine();
+		text("#include <string>").endLine();
+		text("#include <vector>").endLine();
+		text("using namespace std").endCodeLine();
+	}
+	
+	/**
 	 * Function for inserting prefix of function header.
 	 *
 	 * @param funcRetType   The return type of function
