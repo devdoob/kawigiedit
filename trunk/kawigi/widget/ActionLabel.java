@@ -1,7 +1,6 @@
 package kawigi.widget;
 import kawigi.cmd.*;
 import javax.swing.*;
-import javax.swing.event.*;
 import java.beans.*;
 
 /**

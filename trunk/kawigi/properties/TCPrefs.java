@@ -1,7 +1,5 @@
 package kawigi.properties;
-import java.awt.*;
 import java.io.*;
-import java.util.*;
 import com.topcoder.client.contestApplet.common.LocalPreferences;
 
 /**

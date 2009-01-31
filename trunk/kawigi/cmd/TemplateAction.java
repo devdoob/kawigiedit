@@ -1,7 +1,5 @@
 package kawigi.cmd;
-import kawigi.properties.*;
 import kawigi.util.*;
-import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
@@ -44,7 +42,6 @@ public class TemplateAction extends DefaultAction
 	 **/
 	public void actionPerformed(ActionEvent e)
 	{
-		PrefProxy prefs = PrefFactory.getPrefs();
 		switch (cmdid)
 		{
 			case actOpenTemplate:
@@ -132,7 +129,6 @@ public class TemplateAction extends DefaultAction
 	 **/
 	public static void save(boolean prompt)
 	{
-		PrefProxy prefs = PrefFactory.getPrefs();
 		if (prompt || location == null)
 		{
 			JFileChooser chooser = Dispatcher.getFileChooser();

@@ -2,10 +2,7 @@ package kawigi.widget;
 
 import kawigi.cmd.*;
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.event.*;
-import java.beans.*;
-import java.io.*;
 
 /**
  *	A simple panel that has fields to enter a font face and size.

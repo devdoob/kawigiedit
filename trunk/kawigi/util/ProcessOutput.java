@@ -1,6 +1,5 @@
 package kawigi.util;
 import java.io.*;
-import javax.swing.text.*;
 
 /**
  *	A threaded output listener for a process output stream (either stdout or

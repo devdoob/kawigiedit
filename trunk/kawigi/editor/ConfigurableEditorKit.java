@@ -1,6 +1,4 @@
 package kawigi.editor;
-import java.io.IOException;
-import java.io.Reader;
 
 import javax.swing.text.*;
 
@@ -15,7 +13,7 @@ public class ConfigurableEditorKit extends StyledEditorKit
 	/**
 	 *	The Class of View components for this EditorKit.
 	 **/
-	protected Class viewClass;
+	protected Class<? extends View> viewClass;
 	/**
 	 *	My ViewFactory that I return:
 	 **/
@@ -27,7 +25,7 @@ public class ConfigurableEditorKit extends StyledEditorKit
 	 *	v should be compatible with javax.swing.text.View and should probably be
 	 *	GenericView or a subclass of GenericView.
 	 **/
-	public ConfigurableEditorKit(Class v)
+	public ConfigurableEditorKit(Class<? extends View> v)
 	{
 		viewClass = v;
 	}
@@ -45,7 +43,7 @@ public class ConfigurableEditorKit extends StyledEditorKit
 	 *	v should be compatible with javax.swing.text.View, and should probably
 	 *	be GenericView or a subclass of GenericView.
 	 **/
-	public void setViewClass(Class v)
+	public void setViewClass(Class<? extends View> v)
 	{
 		viewClass = v;
 		if (factory != null && (factory instanceof ObedientViewFactory))

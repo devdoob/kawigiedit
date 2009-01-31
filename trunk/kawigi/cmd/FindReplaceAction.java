@@ -1,12 +1,8 @@
 package kawigi.cmd;
 import kawigi.editor.*;
-import kawigi.properties.*;
-import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import java.util.regex.*;
 import javax.swing.*;
-import javax.swing.text.*;
 
 /**
  *	Action implementation for Find/Replace related actions.

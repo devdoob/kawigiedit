@@ -3,9 +3,7 @@ import kawigi.util.*;
 import kawigi.editor.*;
 import kawigi.cmd.*;
 import kawigi.problem.*;
-import kawigi.language.*;
 import javax.swing.*;
-import java.awt.*;
 
 import com.topcoder.shared.language.*;
 import com.topcoder.client.contestant.*;
@@ -293,7 +291,7 @@ public class KawigiEdit
     /**
      * This is the name given by the user to this instance of KawigiEdit.
      **/
-    private String name;
+    //private String name;
 
     /**
      * Code that was first generated on entering to the problem.
@@ -472,6 +470,6 @@ public class KawigiEdit
      **/
     public void setName(String n)
     {
-        name = n;
+        //name = n;
     }
 }

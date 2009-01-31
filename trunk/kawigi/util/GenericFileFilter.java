@@ -11,7 +11,7 @@ public class GenericFileFilter extends FileFilter
 	/**
 	 *	Valid file extensions for this file filter.
 	 **/
-	private ArrayList extensions;
+	private ArrayList<String> extensions;
 	
 	/**
 	 *	Description of the type of files this filter accepts.
@@ -26,7 +26,7 @@ public class GenericFileFilter extends FileFilter
 	public GenericFileFilter(String name)
 	{
 		description = name;
-		extensions = new ArrayList();
+		extensions = new ArrayList<String>();
 	}
 	
 	/**

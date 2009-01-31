@@ -3,9 +3,6 @@ package kawigi.problem;
 import java.util.ArrayList;
 import java.util.List;
 
-import kawigi.language.EditorDataType;
-import kawigi.language.EditorLanguage;
-
 
 /**
  * This class represents the code side of a problem statement.

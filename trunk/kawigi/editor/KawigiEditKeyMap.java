@@ -2,7 +2,6 @@ package kawigi.editor;
 import kawigi.cmd.*;
 import javax.swing.*;
 import javax.swing.text.*;
-import javax.swing.event.*;
 import java.util.*;
 import java.awt.event.*;
 

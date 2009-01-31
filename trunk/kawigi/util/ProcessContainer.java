@@ -1,6 +1,4 @@
 package kawigi.util;
-import java.io.*;
-import javax.swing.text.*;
 
 /**
  *	I couldn't do local compiling and testing without this.

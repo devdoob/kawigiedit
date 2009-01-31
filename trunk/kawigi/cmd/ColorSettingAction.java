@@ -4,7 +4,6 @@ import kawigi.editor.*;
 import kawigi.widget.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 
 /**
  *	Setting action implementation for color settings.
