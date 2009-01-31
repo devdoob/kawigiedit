@@ -12,6 +12,7 @@ import java.awt.*;
  *	through your fingers!)  The graphical code comes from some old game
  *	programming I did.
  **/
+@SuppressWarnings("serial")
 public class ProblemTimer extends JComponent implements Runnable
 {
 	/**

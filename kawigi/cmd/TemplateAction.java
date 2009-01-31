@@ -7,6 +7,7 @@ import java.io.*;
 /**
  *	Action implementation for Template editor actions.
  **/
+@SuppressWarnings("serial")
 public class TemplateAction extends DefaultAction
 {
 	/**

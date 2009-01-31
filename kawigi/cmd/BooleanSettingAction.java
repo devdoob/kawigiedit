@@ -5,6 +5,7 @@ import java.awt.event.*;
 /**
  *	Setting Action implementation for boolean-state settings
  **/
+@SuppressWarnings("serial")
 public class BooleanSettingAction extends SettingAction
 {
 	/**

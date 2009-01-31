@@ -6,6 +6,7 @@ import javax.swing.*;
  *	
  *	This makes it easier to lay out the UI in XML.
  **/
+@SuppressWarnings("serial")
 public class HorizontalPanel extends JPanel
 {
 	/**

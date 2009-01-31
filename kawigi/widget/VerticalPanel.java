@@ -4,6 +4,7 @@ import javax.swing.*;
 /**
  *	A JPanel with a vertical BoxLayout applied.
  **/
+@SuppressWarnings("serial")
 public class VerticalPanel extends JPanel
 {
 	/**

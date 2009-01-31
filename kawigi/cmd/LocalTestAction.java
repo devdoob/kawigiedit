@@ -19,6 +19,7 @@ import kawigi.util.StringsUtil;
  *
  *	This includes most of the buttons across the bottom of the KawigiEdit panel.
  **/
+@SuppressWarnings("serial")
 public class LocalTestAction extends DefaultAction
 {
 	/**

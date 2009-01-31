@@ -9,6 +9,7 @@ import java.beans.*;
  *	
  *	See rant in ActionStateCheckBox for more information.
  **/
+@SuppressWarnings("serial")
 public class ActionStateRadioButton extends JRadioButton implements PropertyChangeListener
 {
 	/**

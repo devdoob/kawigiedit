@@ -10,6 +10,7 @@ import java.beans.*;
  *	The rant in the description of the ActionStateCheckBox is mostly applicable
  *	here.
  **/
+@SuppressWarnings("serial")
 public class HideableButton extends JButton implements PropertyChangeListener
 {
 	/**

@@ -7,6 +7,7 @@ import java.beans.*;
 /**
  *	A subclass of JSpinner that can use Actions to store properties.
  **/
+@SuppressWarnings("serial")
 public class ActionSpinner extends JSpinner implements PropertyChangeListener, ChangeListener
 {
 	/**

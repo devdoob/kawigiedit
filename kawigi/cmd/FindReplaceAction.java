@@ -9,6 +9,7 @@ import javax.swing.*;
  *	
  *	Actions here are <i>not</i> global, because they act on a specific CodePane.
  **/
+@SuppressWarnings("serial")
 public class FindReplaceAction extends DefaultAction
 {
 	/**

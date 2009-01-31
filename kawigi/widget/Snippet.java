@@ -19,6 +19,7 @@ import javax.swing.*;
  *		actInsertCode is executed from the Dispatcher.</li>
  *	</ul>
  **/
+@SuppressWarnings("serial")
 public class Snippet extends JMenuItem implements ActionListener
 {
 	/**

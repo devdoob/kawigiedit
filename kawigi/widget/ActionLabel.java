@@ -6,6 +6,7 @@ import java.beans.*;
 /**
  *	Just a JLabel that can be configured and updated by an Action.
  **/
+@SuppressWarnings("serial")
 public class ActionLabel extends JLabel implements PropertyChangeListener
 {
 	/**

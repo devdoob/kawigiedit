@@ -5,6 +5,7 @@ import java.awt.event.*;
 /**
  *	Setting action implementation for string settings.
  **/
+@SuppressWarnings("serial")
 public class TextSettingAction extends SettingAction
 {
 	/**

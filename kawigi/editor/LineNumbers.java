@@ -16,6 +16,7 @@ import java.beans.*;
  *	By clicking or clicking and dragging on numbers, you can select lines of text
  *	in the text pane.
  **/
+@SuppressWarnings("serial")
 public class LineNumbers extends JComponent implements DocumentListener, MouseListener, MouseMotionListener,
 													   PropertyChangeListener, CaretListener, HierarchyListener
 {

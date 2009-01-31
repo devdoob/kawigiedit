@@ -9,6 +9,7 @@ import java.beans.*;
 /**
  *	A simple panel that has fields to enter a font face and size.
  **/
+@SuppressWarnings("serial")
 public class FontPanel extends JPanel implements ItemListener, ChangeListener, PropertyChangeListener
 {
 	/**

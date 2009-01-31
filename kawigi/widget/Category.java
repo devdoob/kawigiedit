@@ -11,6 +11,7 @@ import java.io.*;
  *	somewhere else and we could get rid of this class altogether, but it's
  *	already written, so why bother?
  **/
+@SuppressWarnings("serial")
 public class Category extends JMenu implements MenuElement
 {
 	/**

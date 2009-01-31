@@ -17,6 +17,7 @@ import java.beans.*;
  *	might go off the edge of the screen).
  *	[/rant]
  **/
+@SuppressWarnings("serial")
 public class ColorSwatchDropdown extends JToggleButton implements ActionListener, PropertyChangeListener, PopupMenuListener
 {
 	/**

@@ -16,6 +16,7 @@ import javax.swing.text.*;
  *	
  *	Examples of actions implemented here include copy, paste, undo, and indent.
  **/
+@SuppressWarnings("serial")
 public class EditorAction extends DefaultAction
 {
 	/**

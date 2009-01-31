@@ -28,6 +28,7 @@ import kawigi.properties.PrefProxy;
  *	was reduced again to be somewhere more in the middle of several other
  *	components.
  **/
+@SuppressWarnings("serial")
 public class CodePane extends JTextPane implements MouseListener, DocumentListener
 {
 	private UndoManager undo;
