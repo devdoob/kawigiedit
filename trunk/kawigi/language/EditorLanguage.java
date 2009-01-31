@@ -1028,7 +1028,7 @@ public abstract class EditorLanguage
 
 	/**
 	 * Specific function for inserting some stuff before code generation
-	 * starts. Made specially for C# and VB. By default does nothing.
+	 * starts. By default does nothing.
 	 */
 	protected void preamble()
 	{}
