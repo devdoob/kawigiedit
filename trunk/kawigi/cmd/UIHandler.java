@@ -154,7 +154,7 @@ public class UIHandler extends DefaultHandler
 		String classname = qName;
 		try
 		{
-			Class<? extends Container> controlClass = (Class<? extends Container>)getClass(classname);
+			Class<? extends Container> controlClass = getClass(classname).asSubclass(Container.class);
 			Container control = null;
 			if (action != null)
 			{
