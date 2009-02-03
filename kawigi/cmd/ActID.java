@@ -239,6 +239,8 @@ public enum ActID
 	actInsertTestCode(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_E), "Test Code Tag", "Inserts the KawigiEdit tag for testing code", null, EditorAction.class, false),
 	// Brings up a dialog for editing test cases.
 	actTestCases(null, null, "Test Cases", "Calling the test cases editor for 'Run Tests'", null, TestCasesAction.class, true),
+	// Closes the dialog for editing test cases.
+	actCloseTestCases(null, null, "Close", "Closes the window of test cases editor", null, TestCasesAction.class, true),
 	// Edit the single test case.
 	actEditTestCase(null, null, "Edit", "Change this test case", null, TestCasesAction.class, true),
 	// Delete some test case.

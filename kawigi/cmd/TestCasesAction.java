@@ -171,6 +171,9 @@ public final class TestCasesAction extends DefaultAction
         case actTestCases:
             showMainDialog();
             break;
+        case actCloseTestCases:
+            mainDlg.setVisible(false);
+            break;
 		case actAddExTestCases:
 			addExampleTestCases();
 			break;
@@ -494,13 +497,21 @@ public final class TestCasesAction extends DefaultAction
 		mainPan.add(casesPan);
 
 		// Now bottom buttons "Add" and "Add examples"
-		JPanel downPan = new JPanel();
+		GridPanel downPan = new GridPanel();
+		downPan.setGridDimensions("2,1");
+		JPanel downUpPan = new JPanel();
 		Action act = disp.getAction(ActID.actAddTestCase);
 		JButton addBut = new JButton(act);
-		downPan.add(addBut);
+		downUpPan.add(addBut);
 		act = disp.getAction(ActID.actAddExTestCases);
 		JButton addExBut = new JButton(act);
-		downPan.add(addExBut);
+		downUpPan.add(addExBut);
+		downPan.add(downUpPan);
+		JPanel downDownPan = new JPanel();
+		act = disp.getAction(ActID.actCloseTestCases);
+		JButton closeBut = new JButton(act);
+		downDownPan.add(closeBut);
+		downPan.add(downDownPan);
 		mainPan.add(downPan);
 
 		// We can pack dialog
