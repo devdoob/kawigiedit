@@ -306,7 +306,7 @@ public class CodePane extends JTextPane implements MouseListener, DocumentListen
 	 * Mark when the source code was last changed. This is possible due to DocumentListener
 	 * interface. This listener is assigned readdUndoListener() method. 
 	 */
-	private void sourceCodeChanged()
+	public void sourceCodeChanged()
 	{
 		lastEditTime = System.currentTimeMillis();
 	}
