@@ -304,6 +304,7 @@ public final class TestCasesAction extends DefaultAction
 	    EditorLanguage lang = ProblemContext.getLanguage();
 	    CodePane testCodePane = Dispatcher.getTestCodePane();
 	    testCodePane.setText(lang.getTestCode(cl));
+	    Dispatcher.sourceCodeChanged();
 	}
 
 	/**
@@ -469,6 +470,7 @@ public final class TestCasesAction extends DefaultAction
 		Dispatcher disp = Dispatcher.getGlobalDispatcher();
 		mainDlg = new JDialog((Frame)null, "Test cases editor", false);
 		//mainDlg = new JDialog(Dispatcher.getWindow(), "Test cases editor", false);
+		mainDlg.addWindowListener(Dispatcher.getGlobalDispatcher());
 
 		// Main window elements
 		VerticalPanel mainPan = new VerticalPanel();
@@ -815,7 +817,7 @@ public final class TestCasesAction extends DefaultAction
 			showCaseDialog();
 		}
 		catch (CloneNotSupportedException cnse) {
-			// in fact this shouldn't ever hapen
+			// in fact this shouldn't ever happen
 		}
 	}
 

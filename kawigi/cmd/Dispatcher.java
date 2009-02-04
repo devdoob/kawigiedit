@@ -363,6 +363,11 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 		getCodePane().resetLastEditTime();
 	}
 	
+	public static void sourceCodeChanged()
+	{
+		getCodePane().sourceCodeChanged();
+	}
+	
 	/**
 	 *	Gets the Action instance for the given ActID.
 	 **/
