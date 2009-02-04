@@ -1583,8 +1583,16 @@ public abstract class EditorLanguage
 			// For doubles comparing is as follows: get absolute value
 			// of right variable or 1.0 (whichever is greater),
 			// multiply it on 1e-9 and compare to absolute value of difference
-			// between variables
-			abs().text("(").text(varRight).arrayIndex(isArray)
+			// between variables. Also make a simple check for NaN as x == x
+			// because NaN != NaN by definition.
+			text(varLeft).arrayIndex(isArray)
+						.text(isNotEqual? sUnequalSign: sEqualSign)
+						.text(varLeft).arrayIndex(isArray);
+			if (isNotEqual)
+				or();
+			else
+				and();
+				abs().text("(").text(varRight).arrayIndex(isArray)
 							.text(" - ").text(varLeft).arrayIndex(isArray)
 					.text(") ").text(isNotEqual? ">": "<=")
 					.text(" 1e-9 * ").max().text("(1.0, ")
