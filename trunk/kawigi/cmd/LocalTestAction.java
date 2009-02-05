@@ -72,7 +72,6 @@ public class LocalTestAction extends DefaultAction
 	public void actionPerformed(ActionEvent e)
 	{
 		ClassDecl cl = ProblemContext.getCurrentClass();
-		CodePane codePane = Dispatcher.getCodePane();
 		switch (cmdid)
 		{
 			case actGenerateCode:
@@ -83,20 +82,8 @@ public class LocalTestAction extends DefaultAction
 					if (null == cl)
 						break;
 				}
-				EditorLanguage lang = ProblemContext.getLanguage();
-				Skeleton code = lang.getSkeleton(cl);
-				codePane.setContentType("text/" + lang.toString());
-				codePane.readdUndoListener();
-				codePane.setText(code.getSource().toString());
-				codePane.setCaretPosition(code.getCaret());
-				codePane.requestFocusInWindow();
-				CodePane testCodePane = Dispatcher.getTestCodePane();
-				testCodePane.setContentType("text/" + lang.toString());
-				testCodePane.readdUndoListener();
-				testCodePane.setText(lang.getTestCode(cl));
-
-				resetLastSaveTime();
-				Dispatcher.resetLastEditTime();
+				generateStubCode();
+				Dispatcher.sourceCodeChanged();
 				break;
 			}
 			case actSaveLocal:
@@ -180,11 +167,29 @@ public class LocalTestAction extends DefaultAction
 		Dispatcher.getGlobalDispatcher().UIRefresh();
 	}
 
+	public static void generateStubCode()
+	{
+		EditorLanguage lang = ProblemContext.getLanguage();
+		ClassDecl cl = ProblemContext.getCurrentClass();
+		Skeleton code = lang.getSkeleton(cl);
+		CodePane codePane = Dispatcher.getCodePane();
+		codePane.setContentType("text/" + lang.toString());
+		codePane.readdUndoListener();
+		codePane.setText(code.getSource().toString());
+		codePane.setCaretPosition(code.getCaret());
+		codePane.requestFocusInWindow();
+		CodePane testCodePane = Dispatcher.getTestCodePane();
+		testCodePane.setContentType("text/" + lang.toString());
+		testCodePane.readdUndoListener();
+		testCodePane.setText(lang.getTestCode(cl));
+	}
+	
 	/**
 	 *	Parses the text between "BEGIN KAWIGIEDIT TESTING" and "END KAWIGIEDIT TESTING"
 	 *  into test cases, inserts this code into TestPane and inserts into the code tag <%:testing-code%>.
 	 **/
-	protected void restoreTesting(StringBuilder text, ClassDecl cl, EditorLanguage lang) {
+	protected void restoreTesting(StringBuilder text, ClassDecl cl, EditorLanguage lang)
+	{
 		StringBuilder tests = new StringBuilder(1000);
 		cl.removeAllTests();
 		lang.extractTestCases(text, cl, tests);

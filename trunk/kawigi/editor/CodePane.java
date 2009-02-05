@@ -308,7 +308,8 @@ public class CodePane extends JTextPane implements MouseListener, DocumentListen
 	 */
 	public void sourceCodeChanged()
 	{
-		lastEditTime = System.currentTimeMillis();
+		if (!Dispatcher.isAutoCodeEditing())
+			lastEditTime = System.currentTimeMillis();
 	}
 	
 	/**
@@ -320,7 +321,10 @@ public class CodePane extends JTextPane implements MouseListener, DocumentListen
 	{
 		return lastEditTime;
 	}
-	
+
+	/**
+	 * Set last time when source code was changed to 0.
+	 */
 	public void resetLastEditTime()
 	{
 		lastEditTime = 0;
