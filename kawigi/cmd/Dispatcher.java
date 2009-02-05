@@ -42,6 +42,11 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 	 **/
 	private static EditorPanel editorPanel, localCodeEditorPanel, testEditorPanel, templateEditorPanel;
 	/**
+	 * Flag set when KE itself does some edits of source code as opposed to
+	 * user-initiated edits.
+	 */
+	private static boolean autoCodeEditing;
+	/**
 	 *	Global output displays.
 	 **/
 	private static SimpleOutputComponent outputComp, compileComp;
@@ -353,21 +358,46 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 		return globalFileChooser;
 	}
 
+	/**
+	 * Get last time when source code was changed by user.
+	 */
 	public static long getLastEditTime()
 	{
 		return getCodePane().getLastEditTime();
 	}
 	
+	/**
+	 * Set last time when source code was changed to 0.
+	 */
 	public static void resetLastEditTime()
 	{
 		getCodePane().resetLastEditTime();
 	}
 	
+	/**
+	 * Mark when the source code was last changed.
+	 */
 	public static void sourceCodeChanged()
 	{
 		getCodePane().sourceCodeChanged();
 	}
-	
+
+	/**
+	 * Set flag showing that source code is edited be KE, not by user.
+	 */
+	public static void setAutoCodeEditing(boolean value)
+	{
+		autoCodeEditing = value;
+	}
+
+	/**
+	 * Check if KE is in process of automatic changing to source code.
+	 */
+    public static boolean isAutoCodeEditing()
+    {
+    	return autoCodeEditing;
+    }
+    
 	/**
 	 *	Gets the Action instance for the given ActID.
 	 **/
