@@ -2216,7 +2216,7 @@ public abstract class EditorLanguage
 		String pref = getNumTypePrefix(type);
 		String suf = getNumTypePostfix(type);
 		Pattern res = null;
-		if (0 < pref.length() && 0 < suf.length()) {
+		if (0 < pref.length() || 0 < suf.length()) {
 			/* This parentheses-replacing stuff is made because for instance
 			   I (Pavel Ivanov aka pivanof) using for local compilation VS.NET
 			   and it has different from gcc long long type and suffix for
