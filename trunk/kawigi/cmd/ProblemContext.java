@@ -9,13 +9,17 @@ import kawigi.language.*;
 public class ProblemContext
 {
 	/**
-	 *	ClassDecl describing the current problem.
+	 * ClassDecl describing the current problem.
 	 **/
 	private static ClassDecl currentClass;
 	/**
-	 *	EditorLanguage indicating the current language.
+	 * EditorLanguage indicating the current language.
 	 **/
 	private static EditorLanguage currentLanguage;
+	/**
+	 * Full text of the current problem statement.
+	 */
+	private static String currentStatement;
 	
 	/**
 	 *	Returns the current problem's class info.
@@ -47,5 +51,21 @@ public class ProblemContext
 	public static void setLanguage(EditorLanguage lang)
 	{
 		currentLanguage = lang;
+	}
+	
+	/**
+	 * Returns the current problem statement.
+	 **/
+	public static String getStatement()
+	{
+		return currentStatement;
+	}
+	
+	/**
+	 * Sets the current problem statement.
+	 **/
+	public static void setStatement(String statement)
+	{
+		currentStatement = statement;
 	}
 }

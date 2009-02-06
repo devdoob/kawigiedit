@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.regex.*;
 import java.io.*;
 
+import kawigi.cmd.ActID;
+import kawigi.cmd.ProblemContext;
 import kawigi.properties.PrefFactory;
 import kawigi.properties.PrefProxy;
 import kawigi.problem.*;
@@ -2156,6 +2158,25 @@ public abstract class EditorLanguage
 	}
 
 	/**
+	 * Adds current problem statement text as a comment 
+	 */
+	private final void problemStmtComment()
+	{
+		boolean needStmt = PrefFactory.getPrefs().getBoolean(ActID.actSaveStatement.preference, false);
+		if (!needStmt) {
+			return;
+		}
+
+		String stmt = ProblemContext.getStatement();
+		if (stmt.length() == 0) {
+			return;
+		}
+		
+		stmt = stmt.replaceAll(StringsUtil.sCRLFregex, "\n" + sCurIndent + sLineComment + " ");
+		text(sLineComment).text(' ').text(stmt).endLine();
+	}
+	
+	/**
 	 * Makes full generation of test code and returns it as <code>String</code>.
 	 *
 	 * @param classProblem  Problem class information for test code
@@ -2186,6 +2207,7 @@ public abstract class EditorLanguage
 		makeTestCaller();
 		mainSub();
 		postamble();
+		problemStmtComment();
 		// This comment is used for cutting testing code on loading too
 		comment(sTestRegionEnd);
 		finalizeCode();
