@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project name="KawigiEdit" default="build" basedir=".">
     <property name="contestapplet_file" value="${basedir}/../../ContestApplet.jar"/>
+    <property name="contestapplet_file_in_tags" value="${basedir}/../../../ContestApplet.jar"/>
 
     <property name="build.compiler" value="javac1.5"/>
     <property name="ant.build.javac.target" value="1.5"/>
@@ -23,6 +24,7 @@
 
     <path id="build_classpath">
         <pathelement location="${contestapplet_file}"/>
+        <pathelement location="${contestapplet_file_in_tags}"/>
     </path>
 
     <target name="build">
@@ -65,6 +67,6 @@
             </fileset>
         </copy>
         <jar jarfile="${package_file}" manifest="${manifest_file}" basedir="${packagedir}"/>
-        <rmdir dir="${packagedir}"/>
+        <delete dir="${packagedir}"/>
     </target>
 </project>
