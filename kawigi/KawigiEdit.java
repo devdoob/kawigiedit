@@ -380,6 +380,8 @@ public class KawigiEdit
             Dispatcher.resetLastEditTime();
         }
 
+        LocalTestAction.requestFileSync();
+        
         Dispatcher.hookMainWindow();
     }
 

@@ -240,7 +240,7 @@ public class LocalTestAction extends DefaultAction
 			return;
 		
 		long fileTime = f.lastModified();
-		if (fileTime > getLastSaveTime()) {
+		if (f.exists() && fileTime > getLastSaveTime()) {
 			int sel = JOptionPane.showConfirmDialog(Dispatcher.getWindow(),
 					"The file on disk was changed by external program.\nAre you sure you want to save it?",
 					"Saving solution code", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
