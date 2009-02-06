@@ -417,9 +417,15 @@ public class KawigiEdit
      **/
     public void setProblemComponent(ProblemComponentModel component, Language lang, com.topcoder.shared.problem.Renderer renderer)
     {
-        if (Dispatcher.getProblemTimer() != null)
+    	if (Dispatcher.getProblemTimer() != null)
             Dispatcher.getProblemTimer().select(component.getComponent().getProblemId(), component.getPoints().doubleValue());
         ProblemContext.setCurrentClass(ClassDeclFactory.getClassDecl(component.getComponent(), lang));
+    	try {
+			ProblemContext.setStatement(renderer.toPlainText(lang));
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     /**

@@ -142,6 +142,8 @@ public enum ActID
 	actAutoFileSync(null, new Integer(KeyEvent.VK_A), "Auto synchronization with external file", "Do automatic loading and saving of the source from editor to file", null, BooleanSettingAction.class, true, "kawigi.file.sync", false),
 	// Prefer external file sources over sources given from TopCoder server
 	actPreferFileOpen(null, new Integer(KeyEvent.VK_P), "Always prefer external file to TC source", "When opening the problem always load source from file if it exists", null, BooleanSettingAction.class, true, "kawigi.file.prefer", false),
+	// Prefer external file sources over sources given from TopCoder server
+	actSaveStatement(null, null, "Save problem statement to external file", "When saving source code with testing code to file save text of problem statement too", null, BooleanSettingAction.class, true, "kawigi.file.statement", false),
 	// Timeout before test processes are automatically killed.
 	actTimeout(null, new Integer(KeyEvent.VK_T), "Process Timeout:", "How long to wait before killing local processes (seconds)", null, NumberSettingAction.class, true, "kawigi.timeout", new int[]{10, 1, 100, 1}),
 	// Settings on the compile and test output text boxes.
