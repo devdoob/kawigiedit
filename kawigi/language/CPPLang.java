@@ -417,6 +417,7 @@ public final class CPPLang extends EditorLanguage
 					val.deleteCharAt(i);
 					val.deleteCharAt(i);
 					val.deleteCharAt(i);
+					--i;
 				}
 			}  // if ('?' == c)
 		}
