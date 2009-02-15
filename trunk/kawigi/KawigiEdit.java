@@ -286,7 +286,7 @@ public class KawigiEdit
      * Contains string representing current version of plugin.
      * Created to exclude repeating of this string in several places.
      */
-    public final static String versionString = "KawigiEdit 2.1.7 (beta) modified by pivanof";
+    public final static String versionString = "KawigiEdit 2.1.8 (from trunk) modified by pivanof";
 
     /**
      * This is the panel returned to TopCoder that is displayed in the applet.
