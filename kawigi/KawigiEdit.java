@@ -286,7 +286,7 @@ public class KawigiEdit
      * Contains string representing current version of plugin.
      * Created to exclude repeating of this string in several places.
      */
-    public final static String versionString = "KawigiEdit 2.1.7 (from trunk) modified by pivanof";
+    public final static String versionString = "KawigiEdit 2.1.7 (beta) modified by pivanof";
 
     /**
      * This is the panel returned to TopCoder that is displayed in the applet.
@@ -305,7 +305,7 @@ public class KawigiEdit
      */
     private boolean outsideMode = false;
     /**
-     * Instance of plugin created by Arena 
+     * Instance of plugin created by Arena
      */
     private static KawigiEdit instance;
     /**
@@ -337,13 +337,13 @@ public class KawigiEdit
         if (mainPanel == null)
         {
             pluginPanel = (JPanel)UIHandler.loadMenu(MenuID.PluginPanel, Dispatcher.getGlobalDispatcher());
-        	mainPanel = new VerticalPanel();
+            mainPanel = new VerticalPanel();
             outsideFrame = new PluginOutsideFrame();
             if (outsideMode) {
-            	outsideFrame.add(pluginPanel);
+                outsideFrame.add(pluginPanel);
             }
             else {
-            	mainPanel.add(pluginPanel);
+                mainPanel.add(pluginPanel);
             }
         }
         if (Dispatcher.getTabbedPane() != null)
@@ -513,56 +513,56 @@ public class KawigiEdit
     {
         //name = n;
     }
-    
+
     /**
      * Get flag if plugin is working in out-of-the-arena mode
      */
     public static boolean getOutsideMode() {
-    	return instance.outsideMode;
+        return instance.outsideMode;
     }
 
     /**
-     * Turn out-of-the-arena mode of plugin working on or off 
+     * Turn out-of-the-arena mode of plugin working on or off
      */
     public static void setOutsideMode(boolean value) {
-    	if (instance.outsideMode == value)
-    		return;
-    	
-    	if (value) {
-    		instance.mainPanel.remove(instance.pluginPanel);
-    		instance.mainPanel.validate();
-    		instance.mainPanel.repaint();
-    		instance.outsideFrame.add(instance.pluginPanel);
-    		instance.outsideFrame.setVisible(true);
-    	}
-    	else {
-    		instance.outsideFrame.setVisible(false);
-    		instance.outsideFrame.remove(instance.pluginPanel);
-    		instance.mainPanel.add(instance.pluginPanel);
-    		instance.mainPanel.validate();
-    	}
+        if (instance.outsideMode == value)
+            return;
 
-    	instance.outsideMode = value;
-    	Dispatcher.hookMainWindow();
+        if (value) {
+            instance.mainPanel.remove(instance.pluginPanel);
+            instance.mainPanel.validate();
+            instance.mainPanel.repaint();
+            instance.outsideFrame.add(instance.pluginPanel);
+            instance.outsideFrame.setVisible(true);
+        }
+        else {
+            instance.outsideFrame.setVisible(false);
+            instance.outsideFrame.remove(instance.pluginPanel);
+            instance.mainPanel.add(instance.pluginPanel);
+            instance.mainPanel.validate();
+        }
+
+        instance.outsideMode = value;
+        Dispatcher.hookMainWindow();
     }
 
     /**
-     * Get main plugin panel placed always inside the Arena 
+     * Get main plugin panel placed always inside the Arena
      */
     public static JPanel getMainPanel() {
-    	return instance.mainPanel;
+        return instance.mainPanel;
     }
 
     /**
      * Get Arena window where plugin is placed
      */
     public static JFrame getArenaWindow() {
-		if (instance.mainPanel != null) {
-			Container cont = instance.mainPanel.getTopLevelAncestor();
-			if (cont instanceof JFrame)
-				return (JFrame)cont;
-		}
+        if (instance.mainPanel != null) {
+            Container cont = instance.mainPanel.getTopLevelAncestor();
+            if (cont instanceof JFrame)
+                return (JFrame)cont;
+        }
 
-		return null;
+        return null;
     }
 }
