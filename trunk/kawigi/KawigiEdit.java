@@ -1,5 +1,9 @@
 package kawigi;
+import java.awt.Container;
+
 import kawigi.util.*;
+import kawigi.widget.PluginOutsideFrame;
+import kawigi.widget.VerticalPanel;
 import kawigi.editor.*;
 import kawigi.cmd.*;
 import kawigi.problem.*;
@@ -289,6 +293,22 @@ public class KawigiEdit
      **/
     private JPanel mainPanel;
     /**
+     * Panel containing all plugin controls
+     */
+    private JPanel pluginPanel;
+    /**
+     * Frame for hosting plugin when working in out-of-the-arena mode
+     */
+    private JFrame outsideFrame;
+    /**
+     * Flag showing if out-of-the-arena mode is turned on or off
+     */
+    private boolean outsideMode = false;
+    /**
+     * Instance of plugin created by Arena 
+     */
+    private static KawigiEdit instance;
+    /**
      * This is the name given by the user to this instance of KawigiEdit.
      **/
     //private String name;
@@ -304,6 +324,7 @@ public class KawigiEdit
     public KawigiEdit()
     {
         AppEnvironment.setEnvironment(AppEnvironment.PluginMode);
+        instance = this;
     }
 
     /**
@@ -315,7 +336,15 @@ public class KawigiEdit
     {
         if (mainPanel == null)
         {
-            mainPanel = (JPanel)UIHandler.loadMenu(MenuID.PluginPanel, Dispatcher.getGlobalDispatcher());
+            pluginPanel = (JPanel)UIHandler.loadMenu(MenuID.PluginPanel, Dispatcher.getGlobalDispatcher());
+        	mainPanel = new VerticalPanel();
+            outsideFrame = new PluginOutsideFrame();
+            if (outsideMode) {
+            	outsideFrame.add(pluginPanel);
+            }
+            else {
+            	mainPanel.add(pluginPanel);
+            }
         }
         if (Dispatcher.getTabbedPane() != null)
             Dispatcher.getTabbedPane().setSelectedComponent(Dispatcher.getEditorPanel());
@@ -483,5 +512,57 @@ public class KawigiEdit
     public void setName(String n)
     {
         //name = n;
+    }
+    
+    /**
+     * Get flag if plugin is working in out-of-the-arena mode
+     */
+    public static boolean getOutsideMode() {
+    	return instance.outsideMode;
+    }
+
+    /**
+     * Turn out-of-the-arena mode of plugin working on or off 
+     */
+    public static void setOutsideMode(boolean value) {
+    	if (instance.outsideMode == value)
+    		return;
+    	
+    	if (value) {
+    		instance.mainPanel.remove(instance.pluginPanel);
+    		instance.mainPanel.validate();
+    		instance.mainPanel.repaint();
+    		instance.outsideFrame.add(instance.pluginPanel);
+    		instance.outsideFrame.setVisible(true);
+    	}
+    	else {
+    		instance.outsideFrame.setVisible(false);
+    		instance.outsideFrame.remove(instance.pluginPanel);
+    		instance.mainPanel.add(instance.pluginPanel);
+    		instance.mainPanel.validate();
+    	}
+
+    	instance.outsideMode = value;
+    	Dispatcher.hookMainWindow();
+    }
+
+    /**
+     * Get main plugin panel placed always inside the Arena 
+     */
+    public static JPanel getMainPanel() {
+    	return instance.mainPanel;
+    }
+
+    /**
+     * Get Arena window where plugin is placed
+     */
+    public static JFrame getArenaWindow() {
+		if (instance.mainPanel != null) {
+			Container cont = instance.mainPanel.getTopLevelAncestor();
+			if (cont instanceof JFrame)
+				return (JFrame)cont;
+		}
+
+		return null;
     }
 }

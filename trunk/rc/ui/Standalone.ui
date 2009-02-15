@@ -1,4 +1,4 @@
-<JFrame Title="KawigiEdit 2.0" DispatcherName="Window">
+<JFrame Title="KawigiEdit 2.1" DispatcherName="Window">
 	<VerticalPanel>
 		<HorizontalPanel>
 			<ProblemTimer DispatcherName="Timer"/>

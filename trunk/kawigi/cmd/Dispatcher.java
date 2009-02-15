@@ -189,6 +189,10 @@ public class Dispatcher implements FocusListener, WindowListener, HierarchyListe
 		hookMainWindow();
 	}
 	
+	/**
+	 * Adds our listener to the window with plugin (either Arena window or
+	 * our out-of-the-arena window).
+	 */
 	public static void hookMainWindow()
 	{
 		// We need to catch operations on main window to make auto file synchronization possible

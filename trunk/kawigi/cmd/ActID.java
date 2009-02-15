@@ -263,6 +263,8 @@ public enum ActID
 	actSaveArrayParam(null, null, "OK", null, null, TestCasesAction.class, true),
 	// Cancel editing of array parameter.
 	actCancelArrayParam(null, null, "Cancel", null, null, TestCasesAction.class, true),
+	// Put plugin into separate window and back into Arena window.
+	actOutsideMode(null, null, "Out/In", "Pop-out editor in different window or pop it back into Arena", null, PluginAction.class, true),
 	// Adding this to the end so it's easier to cut and paste actions and modify
 	// them at the end.  Call me lazy.
 	actEnd(null, null, null, null, null, null, true);
