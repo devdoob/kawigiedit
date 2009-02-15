@@ -94,34 +94,7 @@ public class LocalTestAction extends DefaultAction
 				break;
 			case actRunTests:
 				saveLocal();
-				try
-				{
-					if (compileLocal())
-					{
-						Dispatcher.getCompileComponent().println("Compiling finished");
-						Dispatcher.getTabbedPane().setSelectedComponent(Dispatcher.getOutputComponent());
-
-						if (proc == null || proc.isDone())
-						{
-							Process p = Runtime.getRuntime().exec(ProblemContext.getLanguage().getRunCommand(cl.getName(), PrefFactory.getPrefs().getWorkingDirectory().getPath()), null, PrefFactory.getPrefs().getWorkingDirectory());
-							proc = new ProcessContainer(p, Dispatcher.getOutputComponent());
-							proc.start();
-						}
-						else
-						{
-							Dispatcher.getOutputComponent().println("Error: Can't start new process while another is running.");
-						}
-					}
-					else
-					{
-						Dispatcher.getCompileComponent().println("Compiling errors");
-						Dispatcher.getTabbedPane().setSelectedComponent(Dispatcher.getCompileComponent());
-					}
-				}
-				catch (Exception ex)
-				{
-					reportError(ex, false);
-				}
+				compileLocal();
 				break;
 			case actKillProcess:
 				if (proc != null && !proc.isDone())
@@ -330,23 +303,70 @@ public class LocalTestAction extends DefaultAction
 	/**
 	 *	Compiles the saved code for this problem.
 	 **/
-	public boolean compileLocal() throws Exception
+	public void compileLocal()
 	{
-		if (proc == null || proc.isDone())
+		try
 		{
-			Process p = Runtime.getRuntime().exec(ProblemContext.getLanguage().getCompileCommand(ProblemContext.getCurrentClass().getName(), PrefFactory.getPrefs().getWorkingDirectory().getPath()), null, PrefFactory.getPrefs().getWorkingDirectory());
-			proc = new ProcessContainer(p, Dispatcher.getCompileComponent(), false);
-			proc.start();
-			p.waitFor();
-			return proc.endVal() == 0;
+			if (proc == null || proc.isDone())
+			{
+				Dispatcher.getTabbedPane().setSelectedComponent(Dispatcher.getCompileComponent());
+				Process p = Runtime.getRuntime().exec(ProblemContext.getLanguage().getCompileCommand(ProblemContext.getCurrentClass().getName(), PrefFactory.getPrefs().getWorkingDirectory().getPath()), null, PrefFactory.getPrefs().getWorkingDirectory());
+				proc = new ProcessContainer(p, Dispatcher.getCompileComponent(), false,
+								new Runnable() {
+									public void run() {
+										runLocal();
+									}
+								});
+				proc.start();
+			}
+			else
+			{
+				Dispatcher.getCompileComponent().println("Error: Can't compile while another process is running");
+			}
 		}
-		else
+		catch (Exception ex)
 		{
-			Dispatcher.getCompileComponent().println("Error: Can't compile while another process is running");
-			return false;
+			reportError(ex, false);
 		}
 	}
-	
+
+	/**
+	 * Run test program if compilation was successful
+	 */
+	public void runLocal()
+	{
+		try
+		{
+			if (proc.endVal() == 0)
+			{
+				Dispatcher.getCompileComponent().println("Compiling finished");
+				Dispatcher.getTabbedPane().setSelectedComponent(Dispatcher.getOutputComponent());
+
+				if (proc == null || proc.isDone())
+				{
+					Process p = Runtime.getRuntime().exec(ProblemContext.getLanguage().getRunCommand(ProblemContext.getCurrentClass().getName(), PrefFactory.getPrefs().getWorkingDirectory().getPath()), null, PrefFactory.getPrefs().getWorkingDirectory());
+					proc = new ProcessContainer(p, Dispatcher.getOutputComponent());
+					proc.start();
+				}
+				else
+				{
+					Dispatcher.getOutputComponent().println("Error: Can't start new process while another is running.");
+				}
+			}
+			else
+			{
+				Dispatcher.getCompileComponent().println("Compiling errors");
+			}
+		}
+		catch (Exception ex)
+		{
+			reportError(ex, false);
+		}
+	}
+
+	/**
+	 * Do auto-synchronization of the program text with external file
+	 */
 	public static void requestFileSync()
 	{
 		boolean needSync = PrefFactory.getPrefs().getBoolean(ActID.actAutoFileSync.preference, false);

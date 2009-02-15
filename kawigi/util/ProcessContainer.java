@@ -12,7 +12,9 @@ public class ProcessContainer implements Runnable
 	 *	The Process that is run by this ProcessContainer.
 	 **/
 	private Process p;
-	
+	/**
+	 * Thread supervising executing process for the error return code
+	 */
 	private Thread t;
 	/**
 	 *	The display control for things printed to stdout.
@@ -26,6 +28,10 @@ public class ProcessContainer implements Runnable
 	 *	Output thread for stderr.
 	 **/
 	private ProcessOutput stderr;
+	/**
+	 * Runnable object to execute some action after process is finished
+	 */
+	private Runnable postAction;
 	/**
 	 *	The exit value of this process.  In normal semantics, an exit value of
 	 *	zero means the program exited normally, and anything else indicates an
@@ -48,7 +54,7 @@ public class ProcessContainer implements Runnable
 	 **/
 	public ProcessContainer(Process p, ConsoleDisplay output)
 	{
-		this(p, output, true);
+		this(p, output, true, null);
 	}
 	
 	/**
@@ -60,10 +66,11 @@ public class ProcessContainer implements Runnable
 	 *	If doTimeout is true, the process will be killed according to the
 	 *	current user settings for the time limit.
 	 **/
-	public ProcessContainer(Process p, ConsoleDisplay output, boolean doTimeout)
+	public ProcessContainer(Process p, ConsoleDisplay output, boolean doTimeout, Runnable postAction)
 	{
 		
 		this.p = p;
+		this.postAction = postAction;
 		outputComponent = output;
 		if (doTimeout)
 			new KillThread(this).start();
@@ -80,7 +87,7 @@ public class ProcessContainer implements Runnable
 		stdout.start();
 		stderr.start();
 		t = new Thread(this);
-		t.run();
+		t.start();
 	}
 	
 	/**
@@ -130,10 +137,17 @@ public class ProcessContainer implements Runnable
 		return -1;
 	}
 	
+	/**
+	 * Method executing in the separate thread to inform user if executing process
+	 * return some non-zero exit code without printing any message. 
+	 */
 	public void run()
 	{
 		if (endVal() != 0) {
 			outputComponent.println("Process terminated with exit code " + endVal());
+		}
+		if (postAction != null) {
+			postAction.run();
 		}
 	}
 	
