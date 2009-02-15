@@ -23,5 +23,6 @@
 		<JButton Action="actLoad"/>
 		<JButton Action="actKillProcess"/>
 		<JButton Action="actTestCases"/>
+        <JButton Action="actOutsideMode"/>
 	</HorizontalPanel>
 </VerticalPanel>

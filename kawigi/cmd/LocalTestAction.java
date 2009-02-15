@@ -75,7 +75,6 @@ public class LocalTestAction extends DefaultAction
 		switch (cmdid)
 		{
 			case actGenerateCode:
-			{
 				if (AppEnvironment.getEnvironment() != AppEnvironment.PluginMode)
 				{
 					ProblemContext.setCurrentClass(cl = ClassDeclFactory.getClassDecl());
@@ -85,7 +84,6 @@ public class LocalTestAction extends DefaultAction
 				generateStubCode();
 				Dispatcher.sourceCodeChanged();
 				break;
-			}
 			case actSaveLocal:
 				saveLocal();
 				break;
