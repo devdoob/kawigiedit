@@ -3,6 +3,8 @@
 	<JMenuItem Action="actAddSnippetDlg"/>
 	<JSeparator/>
 	<JMenuItem Action="actInsertTestCode"/>
+    <JMenuItem Action="actTestCases"/>
+    <JMenuItem Action="actOutsideMode"/>
 	<JSeparator/>
 	<JMenuItem Action="actCut"/>
 	<JMenuItem Action="actCopy"/>

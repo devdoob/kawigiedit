@@ -240,7 +240,7 @@ public enum ActID
 	// Inserts the <%:testing-code%> tag.
 	actInsertTestCode(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_E), "Test Code Tag", "Inserts the KawigiEdit tag for testing code", null, EditorAction.class, false),
 	// Brings up a dialog for editing test cases.
-	actTestCases(null, null, "Test Cases", "Calling the test cases editor for 'Run Tests'", null, TestCasesAction.class, true),
+	actTestCases(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_C), "Test Cases", "Calling the test cases editor for 'Run Tests'", null, TestCasesAction.class, true),
 	// Closes the dialog for editing test cases.
 	actCloseTestCases(null, null, "Close", "Closes the window of test cases editor", null, TestCasesAction.class, true),
 	// Edit the single test case.
@@ -264,7 +264,7 @@ public enum ActID
 	// Cancel editing of array parameter.
 	actCancelArrayParam(null, null, "Cancel", null, null, TestCasesAction.class, true),
 	// Put plugin into separate window and back into Arena window.
-	actOutsideMode(null, null, "Out/In", "Pop-out editor in different window or pop it back into Arena", null, PluginAction.class, true),
+	actOutsideMode(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK), new Integer(KeyEvent.VK_I), "Out/In", "Pop-out editor in different window or pop it back into Arena", null, PluginAction.class, true),
 	// Adding this to the end so it's easier to cut and paste actions and modify
 	// them at the end.  Call me lazy.
 	actEnd(null, null, null, null, null, null, true);
