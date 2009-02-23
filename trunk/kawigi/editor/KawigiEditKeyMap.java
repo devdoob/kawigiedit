@@ -68,6 +68,8 @@ public class KawigiEditKeyMap implements Keymap
 		keymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK), editorSubDispatcher.getAction(ActID.actAddSnippetDlg));
 		keymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), editorSubDispatcher.getAction(ActID.actCtxMenu));
 		keymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK), editorSubDispatcher.getAction(ActID.actInsertTestCode));
+		keymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK), editorSubDispatcher.getAction(ActID.actTestCases));
+		keymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK), editorSubDispatcher.getAction(ActID.actOutsideMode));
 	}
 	
 	/**
