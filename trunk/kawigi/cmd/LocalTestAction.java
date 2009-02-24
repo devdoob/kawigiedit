@@ -33,6 +33,7 @@ public class LocalTestAction extends DefaultAction
 	 */
 	private static long lastSaveTime;
 	private static boolean isLoadFileAsked;
+	private static boolean isInLoadSaveAction = false;
 	private static LocalTestAction saveInstance;
 	private static LocalTestAction loadInstance;
 
@@ -206,79 +207,91 @@ public class LocalTestAction extends DefaultAction
 	 **/
 	public void saveLocal()
 	{
-		File f = getSaveFileObj();
-		if (f == null)
-			return;
-		
-		long fileTime = f.lastModified();
-		if (f.exists() && fileTime > getLastSaveTime()) {
-			int sel = JOptionPane.showConfirmDialog(Dispatcher.getWindow(),
-					"The file on disk was changed by external program.\nAre you sure you want to save it?",
-					"Saving solution code", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			if (sel == JOptionPane.NO_OPTION)
+		isInLoadSaveAction = true;
+		try {
+			File f = getSaveFileObj();
+			if (f == null)
 				return;
-		}
-		
-		String source = Dispatcher.getCodePane().getText();
-		source = source.replace(EditorLanguage.sTestingCodeTag, Dispatcher.getTestCodePane().getText());
-		try
-		{
-			PrintWriter out = new PrintWriter(new FileWriter(f));
-			String[] sourceArray = source.split(StringsUtil.sCRLFregex);
-			for (String aSourceArray : sourceArray)
-				out.println(aSourceArray);
-			out.flush();
-			out.close();
 			
-			lastSaveTime = f.lastModified();
+			long fileTime = f.lastModified();
+			if (f.exists() && fileTime > getLastSaveTime()) {
+				int sel = JOptionPane.showConfirmDialog(Dispatcher.getWindow(),
+						"The file on disk was changed by external program.\nAre you sure you want to save it?",
+						"Saving solution code", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (sel == JOptionPane.NO_OPTION)
+					return;
+			}
+			
+			String source = Dispatcher.getCodePane().getText();
+			source = source.replace(EditorLanguage.sTestingCodeTag, Dispatcher.getTestCodePane().getText());
+			try
+			{
+				PrintWriter out = new PrintWriter(new FileWriter(f));
+				String[] sourceArray = source.split(StringsUtil.sCRLFregex);
+				for (String aSourceArray : sourceArray)
+					out.println(aSourceArray);
+				out.flush();
+				out.close();
+				
+				lastSaveTime = f.lastModified();
+			}
+			catch (IOException ex)
+			{
+				reportError(ex, false);
+			}
 		}
-		catch (IOException ex)
-		{
-			reportError(ex, false);
+		finally {
+			isInLoadSaveAction = false;
 		}
 	}
 
 	public void loadFromLocal()
 	{
-		File f = getSaveFileObj();
-		if (f == null || !f.exists())
-			return;
-		
-		long editTime = Dispatcher.getLastEditTime();
-		if (editTime > getLastSaveTime()) {
-			int sel = JOptionPane.showConfirmDialog(Dispatcher.getWindow(),
-					"You have changed the solution source code after last saving.\nAre you sure you want to load code from file?",
-					"Loading solution code", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			if (sel == JOptionPane.NO_OPTION)
+		isInLoadSaveAction = true;
+		try {
+			File f = getSaveFileObj();
+			if (f == null || !f.exists())
 				return;
+			
+			long editTime = Dispatcher.getLastEditTime();
+			if (editTime > getLastSaveTime()) {
+				int sel = JOptionPane.showConfirmDialog(Dispatcher.getWindow(),
+						"You have changed the solution source code after last saving.\nAre you sure you want to load code from file?",
+						"Loading solution code", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (sel == JOptionPane.NO_OPTION)
+					return;
+			}
+			
+			try
+			{
+				BufferedReader in = new BufferedReader(new FileReader(f));
+				String line;
+				StringBuilder text = new StringBuilder(in.readLine());
+				
+				while ((line = in.readLine()) != null)
+					text.append('\n').append(line);
+				in.close();
+				removeCutting(text);
+				restoreTesting(text, ProblemContext.getCurrentClass(), ProblemContext.getLanguage());
+	
+				CodePane pane = Dispatcher.getCodePane();
+				int caret_pos = pane.getCaretPosition();
+				pane.setText(text.toString());
+				if (caret_pos < text.length())
+					pane.setCaretPosition(caret_pos);
+				
+				lastSaveTime = f.lastModified();
+				Dispatcher.resetLastEditTime();
+				
+				Dispatcher.getCodePane().grabFocus();
+			}
+			catch (IOException ex)
+			{
+				reportError(ex, false);
+			}
 		}
-		
-		try
-		{
-			BufferedReader in = new BufferedReader(new FileReader(f));
-			String line;
-			StringBuilder text = new StringBuilder(in.readLine());
-			
-			while ((line = in.readLine()) != null)
-				text.append('\n').append(line);
-			in.close();
-			removeCutting(text);
-			restoreTesting(text, ProblemContext.getCurrentClass(), ProblemContext.getLanguage());
-
-			CodePane pane = Dispatcher.getCodePane();
-			int caret_pos = pane.getCaretPosition();
-			pane.setText(text.toString());
-			if (caret_pos < text.length())
-				pane.setCaretPosition(caret_pos);
-			
-			lastSaveTime = f.lastModified();
-			Dispatcher.resetLastEditTime();
-			
-			Dispatcher.getCodePane().grabFocus();
-		}
-		catch (IOException ex)
-		{
-			reportError(ex, false);
+		finally {
+			isInLoadSaveAction = false;
 		}
 	}
 	
@@ -367,6 +380,9 @@ public class LocalTestAction extends DefaultAction
 	 */
 	public static void requestFileSync()
 	{
+		if (isInLoadSaveAction)
+			return;
+		
 		boolean needSync = PrefFactory.getPrefs().getBoolean(ActID.actAutoFileSync.preference, false);
 		if (!needSync)
 			return;
